@@ -18,6 +18,7 @@ faire, le fait exécuter, l'attaque, et garde la trace de ce qui a tenu et de ce
 | Où en est le travail ? | Le journal des cycles, le plus récent en dernier | [journal/](journal/) |
 | Qu'est-ce qui attend le propriétaire ? | Les décisions à prendre, avec la réponse en un mot | [DECISIONS.md](DECISIONS.md) |
 | Sur quoi porte l'effort ? | Le premier encaissement, deux missions actives au plus | [ADR 0002](docs/adr/0002-priorite-premier-encaissement.md) |
+| Et le commercial ? | REACHER : la mission, son état réel, ce qui lui manque | [docs/REACHER.md](docs/REACHER.md) |
 
 NOVARYS n'est pas opérationnel au sens de son cahier des charges, et rien ne prouve qu'il soit rentable : aucun
 encaissement n'est enregistré dans le moteur à ce jour. Les ventes éventuelles d'actifs hors GitHub ne sont pas

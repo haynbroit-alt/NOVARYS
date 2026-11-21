@@ -51,7 +51,7 @@
 - Modèles : sous-agent haiku pour chercher, sonnet pour implémenter ou relire, opus pour décider, fable seulement
   quand la difficulté l'exige. `/clear` entre deux tâches sans lien, `/compact` en disant quoi garder, `/context`
   pour voir ce qui pèse.
-- Carte (au lieu d'ouvrir les fichiers un par un) : `docs/` (cahier des charges, décisions), `journal/` (cycles),
+- Carte (au lieu d'ouvrir les fichiers un par un) : `docs/` (cahier des charges, décisions, REACHER), `.claude/skills/reacher/` (méthode commerciale), `journal/` (cycles),
   `registre/capacites.toml` (ce qui est revendiqué), `registre/actifs.toml` (actifs), `registre/preuves.jsonl`
   (preuves, ajout seul), `registre/sondes/` (commandes de preuve et d'attaque), `src/novarys_omega/` : `model`
   (référentiel, statuts, niveaux), `runner` (exécution sans secrets, calcul du statut), `registry` (chaîne

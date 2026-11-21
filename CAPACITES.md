@@ -3,7 +3,7 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 10 fonction(s) sur 19 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 14 fonction(s) sur 23 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
@@ -19,7 +19,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | DISCOVERY | 1 | · | · | · | 1 | · |
 | INTERNET | 1 | · | · | · | · | · |
 | ENGINEERING | 1 | · | · | · | · | · |
-| BUSINESS | 1 | · | · | 1 | · | · |
+| BUSINESS | 5 | · | · | 1 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
 | MEMORY | · | 1 | 1 | 1 | · | · |
 | OMEGA | 1 | · | · | 1 | · | · |
@@ -76,6 +76,10 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 |---|---|---|---|---|
 | Enregistrer un encaissement et en déduire au centime l'enveloppe de dépense autorisée (`encaissement-et-enveloppe`) | PROUVÉ | TESTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque résistée · n°18 | Montants fictifs. Aucun encaissement réel n'est enregistré dans le moteur à ce jour. |
 | Offre mise en vente et premier encaissement réel vérifié (`premier-encaissement-reel`) | — | ABSENT | non construite | Non démontré : aucun encaissement n'est enregistré dans le moteur, et les ventes éventuelles d'actifs hors GitHub sont inconnues de ce dépôt. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation. |
+| REACHER : lire les performances et les ventes des comptes commerciaux du propriétaire (`reacher-lecture-comptes`) | — | ABSENT | non construite | Non démontré. Au 21/11/2026, aucun des sept comptes sondés n'est lisible : autorisation expirée, comptes non reliés, boutique bloquée. Le détail est dans le tableau de bord privé. |
+| REACHER : chaque jour, mettre le tableau de bord à jour et proposer au plus trois actions (`reacher-brief-quotidien`) | — | ABSENT | non construite | Non construit. Aucune tâche programmée tant qu'aucun compte n'est lisible et que le propriétaire ne l'a pas demandée : un brief sans donnée serait du travail fictif. |
+| REACHER : produire un contenu commercial et le publier après validation du propriétaire (`reacher-publication-validee`) | — | ABSENT | non construite | Non démontré. Aucun réseau n'est relié à un outil de publication ; aucun contenu n'a été soumis ni publié. |
+| REACHER : trouver des prospects, répondre aux demandes et suivre les commandes (`reacher-prospects-commandes`) | — | ABSENT | non construite | Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer. |
 
 ## AGENTS
 

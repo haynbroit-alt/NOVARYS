@@ -154,6 +154,30 @@ capability = "Offre mise en vente et premier encaissement réel vérifié"
 limits = "Non démontré : aucun encaissement n'est enregistré dans le moteur, et les ventes éventuelles d'actifs hors GitHub sont inconnues de ce dépôt. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation."
 tags = ["scenario-4"]
 
+[[claim]]
+id = "reacher-lecture-comptes"
+domain = "BUSINESS"
+capability = "REACHER : lire les performances et les ventes des comptes commerciaux du propriétaire"
+limits = "Non démontré. Au 21/11/2026, aucun des sept comptes sondés n'est lisible : autorisation expirée, comptes non reliés, boutique bloquée. Le détail est dans le tableau de bord privé."
+
+[[claim]]
+id = "reacher-brief-quotidien"
+domain = "BUSINESS"
+capability = "REACHER : chaque jour, mettre le tableau de bord à jour et proposer au plus trois actions"
+limits = "Non construit. Aucune tâche programmée tant qu'aucun compte n'est lisible et que le propriétaire ne l'a pas demandée : un brief sans donnée serait du travail fictif."
+
+[[claim]]
+id = "reacher-publication-validee"
+domain = "BUSINESS"
+capability = "REACHER : produire un contenu commercial et le publier après validation du propriétaire"
+limits = "Non démontré. Aucun réseau n'est relié à un outil de publication ; aucun contenu n'a été soumis ni publié."
+
+[[claim]]
+id = "reacher-prospects-commandes"
+domain = "BUSINESS"
+capability = "REACHER : trouver des prospects, répondre aux demandes et suivre les commandes"
+limits = "Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer."
+
 # -------------------------------------------------------------------------------------------- AGENTS
 
 [[claim]]
