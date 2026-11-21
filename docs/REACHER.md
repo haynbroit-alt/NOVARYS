@@ -43,14 +43,16 @@ Le tableau de bord n'est pas vérifiable par une commande de ce dépôt : il res
 | Mesure | Valeur |
 |---|---|
 | Comptes commerciaux sondés | 7 |
-| Comptes lisibles | 0 |
-| Causes | 1 autorisation expirée, 5 comptes non reliés, 1 boutique bloquée pour facturation |
+| Comptes lisibles | 1, un compte d'audience, depuis le cycle C-0005 (0 au cycle C-0004) |
+| Causes pour les six autres | 5 comptes non reliés, 1 boutique bloquée pour facturation |
 | Outils reliés et utilisables | création graphique, liens de suivi, stockage de fichiers |
 | Brief quotidien | non programmé |
 
-REACHER existe donc comme méthode et comme tableau de bord. Il ne mesure encore rien et n'a rien publié.
+REACHER existe comme méthode et comme tableau de bord. Il mesure un compte sur sept, aucune boutique, et n'a
+rien publié. Le premier relevé (`journal/C-0005.md`) est fait par un connecteur de la session : `omega` ne peut
+pas le rejouer, et les lignes `reacher-…` de `CAPACITES.md` restent ABSENTES.
 
 ## Ce qui le rendra vrai, dans l'ordre
 
-Les décisions R1 à R5 de `DECISIONS.md`. R1 et R2 suffisent pour un premier relevé réel ; le brief quotidien
-(R4) n'a de sens qu'ensuite.
+Les décisions R2 à R5 de `DECISIONS.md` (R1 est faite). R2 donne le catalogue et les prix ; le brief quotidien
+(R4) n'a de sens qu'avec une boutique ou un réseau actif à lire.

@@ -158,13 +158,13 @@ tags = ["scenario-4"]
 id = "reacher-lecture-comptes"
 domain = "BUSINESS"
 capability = "REACHER : lire les performances et les ventes des comptes commerciaux du propriétaire"
-limits = "Non démontré. Au 21/11/2026, aucun des sept comptes sondés n'est lisible : autorisation expirée, comptes non reliés, boutique bloquée. Le détail est dans le tableau de bord privé."
+limits = "Non démontré par une commande. Au 21/11/2026 (cycle C-0005), un des sept comptes sondés est lisible, par un connecteur de la session que omega ne peut pas rejouer : son audience est relevée, aucune vente. Les six autres : cinq non reliés, une boutique bloquée. Le détail est dans le tableau de bord privé."
 
 [[claim]]
 id = "reacher-brief-quotidien"
 domain = "BUSINESS"
 capability = "REACHER : chaque jour, mettre le tableau de bord à jour et proposer au plus trois actions"
-limits = "Non construit. Aucune tâche programmée tant qu'aucun compte n'est lisible et que le propriétaire ne l'a pas demandée : un brief sans donnée serait du travail fictif."
+limits = "Non construit. Aucune tâche programmée tant qu'aucune boutique ni aucun réseau actif n'est lisible et que le propriétaire ne l'a pas demandée : un brief sans donnée nouvelle serait du travail fictif."
 
 [[claim]]
 id = "reacher-publication-validee"
