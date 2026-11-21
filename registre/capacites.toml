@@ -178,6 +178,12 @@ domain = "BUSINESS"
 capability = "REACHER : trouver des prospects, répondre aux demandes et suivre les commandes"
 limits = "Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer."
 
+[[claim]]
+id = "portail-velyx-en-ligne"
+domain = "BUSINESS"
+capability = "Portail velyx.org en ligne : une page par projet, servie depuis le registre des actifs"
+limits = "Non démontré. Les pages sont générées dans site/ par omega render et contrôlées par omega check, mais rien n'est en ligne : au 21/11/2026 le domaine répond « site introuvable », et sa mise en service est une décision du propriétaire (DECISIONS.md, D9). Le portail ne fait que montrer le registre : ni connexion de comptes, ni paiement, ni automatisation."
+
 # -------------------------------------------------------------------------------------------- AGENTS
 
 [[claim]]
