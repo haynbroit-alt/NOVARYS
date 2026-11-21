@@ -1,0 +1,8 @@
+# Render (Blueprint) : le portail est un site statique. Aucun build, aucun serveur : Render sert le dossier site/,
+# généré par `omega render` et contrôlé par la CI. Le domaine se rattache dans le tableau de bord (DECISIONS.md, D9).
+services:
+  - type: web
+    name: velyx-portail
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: ./site
