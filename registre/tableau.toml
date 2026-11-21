@@ -38,7 +38,7 @@ link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/ACTIFS.md"
 label = "Terminer"
 state = "à faire"
 source = "Aucune offre n'est en vente."
-link = "#priorites"
+link = "projets.html"
 
 [[step]]
 label = "Tester"
@@ -62,7 +62,7 @@ link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/DECISIONS.md"
 label = "Mesurer"
 state = "à faire"
 source = "Aucun compteur de visites."
-link = "#economie"
+link = "index.html"
 
 [[step]]
 label = "Améliorer"

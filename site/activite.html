@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activité — VELYX</title>
+<style>
+:root{--bg:#fff;--fg:#14181f;--soft:#5b6472;--line:#e3e6ea;--card:#f7f8fa;--accent:#1f5eff;
+--ok:#12805c;--warn:#a15c00;--bad:#c0303b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--fg:#e8ebef;--soft:#9aa3af;--line:#262b33;--card:#161a20;
+--accent:#7aa2ff;--ok:#4cc79a;--warn:#e0a85a;--bad:#f0808a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{position:sticky;top:0;z-index:1;display:flex;gap:2px;overflow-x:auto;padding:0 12px;background:var(--bg);
+border-bottom:1px solid var(--line)}
+nav a,nav strong{padding:13px 10px;white-space:nowrap}
+nav a{text-decoration:none;color:var(--soft);border-bottom:2px solid transparent}
+nav a[aria-current]{color:var(--fg);border-color:var(--accent);font-weight:600}
+main{max-width:960px;margin:0 auto;padding:20px 16px 56px}
+h1{font-size:1.35rem;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+h2{font-size:.95rem;margin:28px 0 10px}
+p{margin:0 0 12px;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.soft{color:var(--soft);font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card b{display:block;font-size:1.3rem;line-height:1.3;font-variant-numeric:tabular-nums}
+.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:block;padding:11px 12px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;
+overflow-wrap:anywhere}
+.row:last-child{border-bottom:0}
+a.row:hover,a.row:focus-visible{background:var(--card)}
+.row span:not(.tag){display:block;color:var(--soft);font-size:.85rem}
+.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;border:1px solid;font-size:.72rem;
+font-weight:600;vertical-align:middle}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.off{color:var(--soft)}
+.btn{display:inline-block;padding:8px 14px;border-radius:8px;background:var(--accent);color:var(--bg);
+text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<nav aria-label="Navigation"><strong>VELYX</strong><a href="index.html">Accueil</a><a href="projets.html">Projets</a><a href="connexions.html">Connexions</a><a href="activite.html" aria-current="page">Activité</a><a href="intelligence.html">Intelligence</a><a href="parametres.html">Paramètres</a></nav>
+<main>
+<h1>Activité</h1>
+<h2>Cycle</h2>
+<div class="rows">
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/ACTIFS.md"><b>Auditer</b><span class="tag ok">fait</span><span>17 projets au registre des actifs.</span></a>
+<a class="row" href="projets.html"><b>Terminer</b><span class="tag off">à faire</span><span>Aucune offre n&#x27;est en vente.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/CAPACITES.md"><b>Tester</b><span class="tag warn">en cours</span><span>Matrice des capacités prouvées.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/journal/C-0006.md"><b>Sécuriser</b><span class="tag warn">en cours</span><span>Registre chaîné ; domaine non rattaché.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/DECISIONS.md"><b>Commercialiser</b><span class="tag off">à faire</span><span>Aucun envoi commercial.</span></a>
+<a class="row" href="index.html"><b>Mesurer</b><span class="tag off">à faire</span><span>Aucun compteur de visites.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/tree/main/journal"><b>Améliorer</b><span class="tag off">à faire</span><span>Rien à améliorer sans mesure.</span></a>
+</div>
+<h2>Actions exécutées sur les services externes</h2>
+<div class="rows">
+<div class="row"><b>21/11/2026 · Essai de liaison en lecture seule</b><span>Stripe, Gmail, Agenda, Drive, CRM, Prospection, Canva, outil de gestion des réseaux</span><span>Réponse reçue</span></div>
+<div class="row"><b>21/11/2026 · Essai de liaison en lecture seule</b><span>Shopify</span><span>Refusé par le service</span></div>
+<div class="row"><b>21/11/2026 · Écritures (envoi, publication, paiement, modification)</b><span>Tous</span><span>Aucune</span></div>
+</div>
+<h2>Dernières preuves</h2>
+<div class="rows">
+<div class="row"><b>n°30 · outil-de-preuve</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°29 · outil-de-preuve</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°28 · outil-de-preuve</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°27 · outil-de-preuve</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°26 · outil-de-preuve</b><span class="tag bad">ÉCHEC</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°25 · outil-de-preuve</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · local</span></div>
+<div class="row"><b>n°24 · aucune-approbation-par-agent</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · agent</span></div>
+<div class="row"><b>n°23 · depense-sans-encaissement-refusee</b><span class="tag ok">PROUVÉ</span><span>2026-11-21 · agent</span></div>
+<div class="row"><b>n°22 · etat-persistant-a-jour</b><span class="tag bad">ÉCHEC</span><span>2026-11-21 · agent</span></div>
+<div class="row"><b>n°21 · reprise-tache-interrompue</b><span class="tag warn">ÉTAYÉ</span><span>2026-11-21 · agent</span></div>
+</div>
+<p class="soft" style="margin-top:12px"><a href="https://github.com/haynbroit-alt/NOVARYS/blob/main/registre/preuves.jsonl">Registre complet</a></p>
+</main>
+</body>
+</html>

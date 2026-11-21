@@ -45,13 +45,12 @@ def _generated(root: Path, charter: Charter) -> dict[Path, str]:
     assets = load_assets(root / "registre" / "actifs.toml")
     board = root / "registre" / "tableau.toml"
     links = load_connections(root / "registre" / "connexions.toml")
+    records = registry.read(_proofs(root))
+    site = site_pages(assets, load_measures(board), load_steps(board), links, charter, records)
     return {
-        root / "CAPACITES.md": capabilities_markdown(charter, registry.read(_proofs(root))),
+        root / "CAPACITES.md": capabilities_markdown(charter, records),
         root / "ACTIFS.md": assets_markdown(assets),
-        **{
-            root / "site" / name: page
-            for name, page in site_pages(assets, load_measures(board), load_steps(board), links).items()
-        },
+        **{root / "site" / name: page for name, page in site.items()},
     }
 
 

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paramètres — VELYX</title>
+<style>
+:root{--bg:#fff;--fg:#14181f;--soft:#5b6472;--line:#e3e6ea;--card:#f7f8fa;--accent:#1f5eff;
+--ok:#12805c;--warn:#a15c00;--bad:#c0303b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--fg:#e8ebef;--soft:#9aa3af;--line:#262b33;--card:#161a20;
+--accent:#7aa2ff;--ok:#4cc79a;--warn:#e0a85a;--bad:#f0808a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{position:sticky;top:0;z-index:1;display:flex;gap:2px;overflow-x:auto;padding:0 12px;background:var(--bg);
+border-bottom:1px solid var(--line)}
+nav a,nav strong{padding:13px 10px;white-space:nowrap}
+nav a{text-decoration:none;color:var(--soft);border-bottom:2px solid transparent}
+nav a[aria-current]{color:var(--fg);border-color:var(--accent);font-weight:600}
+main{max-width:960px;margin:0 auto;padding:20px 16px 56px}
+h1{font-size:1.35rem;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+h2{font-size:.95rem;margin:28px 0 10px}
+p{margin:0 0 12px;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.soft{color:var(--soft);font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card b{display:block;font-size:1.3rem;line-height:1.3;font-variant-numeric:tabular-nums}
+.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:block;padding:11px 12px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;
+overflow-wrap:anywhere}
+.row:last-child{border-bottom:0}
+a.row:hover,a.row:focus-visible{background:var(--card)}
+.row span:not(.tag){display:block;color:var(--soft);font-size:.85rem}
+.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;border:1px solid;font-size:.72rem;
+font-weight:600;vertical-align:middle}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.off{color:var(--soft)}
+.btn{display:inline-block;padding:8px 14px;border-radius:8px;background:var(--accent);color:var(--bg);
+text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<nav aria-label="Navigation"><strong>VELYX</strong><a href="index.html">Accueil</a><a href="projets.html">Projets</a><a href="connexions.html">Connexions</a><a href="activite.html">Activité</a><a href="intelligence.html">Intelligence</a><a href="parametres.html" aria-current="page">Paramètres</a></nav>
+<main>
+<h1>Paramètres</h1>
+<div class="rows">
+<a class="row" href="https://claude.ai/settings/connectors"><b>Services connectés</b><span>Autoriser, reconnecter ou révoquer un service.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/DECISIONS.md"><b>Décisions en attente</b><span>Ce que seul le propriétaire peut trancher.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/edit/main/registre/actifs.toml"><b>Projets</b><span>Modifier le registre des projets.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/edit/main/registre/tableau.toml"><b>Chiffres et cycle</b><span>Modifier les mesures et les étapes.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/edit/main/registre/connexions.toml"><b>Connexions</b><span>Modifier l&#x27;état et les permissions des connexions.</span></a>
+<a class="row" href="https://github.com/haynbroit-alt/NOVARYS/blob/main/wrangler.toml"><b>Hébergement</b><span>Publié à chaque fusion sur la branche principale.</span></a>
+</div>
+</main>
+</body>
+</html>
