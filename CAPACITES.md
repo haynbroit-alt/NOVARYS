@@ -3,7 +3,7 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 15 fonction(s) sur 24 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 17 fonction(s) sur 25 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
@@ -19,10 +19,10 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | DISCOVERY | 1 | · | · | · | 1 | · |
 | INTERNET | 1 | · | · | · | · | · |
 | ENGINEERING | 1 | · | · | · | · | · |
-| BUSINESS | 6 | · | · | 1 | · | · |
+| BUSINESS | 7 | · | · | 1 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
 | MEMORY | · | 1 | 1 | 1 | · | · |
-| OMEGA | 1 | · | · | 1 | · | · |
+| OMEGA | 1 | 1 | · | · | · | · |
 | SOVEREIGN | · | · | · | 2 | · | · |
 
 ## Scénarios de validation (cahier des charges, section 14)
@@ -81,6 +81,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | REACHER : produire un contenu commercial et le publier après validation du propriétaire (`reacher-publication-validee`) | — | ABSENT | non construite | Non démontré. Aucun réseau n'est relié à un outil de publication ; aucun contenu n'a été soumis ni publié. |
 | REACHER : trouver des prospects, répondre aux demandes et suivre les commandes (`reacher-prospects-commandes`) | — | ABSENT | non construite | Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer. |
 | Portail velyx.org en ligne : une page par projet, servie depuis le registre des actifs (`portail-velyx-en-ligne`) | — | ABSENT | non construite | Non démontré. Les pages sont générées dans site/ par omega render et contrôlées par omega check, mais rien n'est en ligne : au 21/11/2026 le domaine répond « site introuvable », et sa mise en service est une décision du propriétaire (DECISIONS.md, D9). Le portail ne fait que montrer le registre : ni connexion de comptes, ni paiement, ni automatisation. |
+| Centre de connexions : relier, autoriser, surveiller et déconnecter les services externes depuis VELYX (`centre-de-connexions`) | — | ABSENT | non construite | Non démontré par une commande. Ce qui existe au 21/11/2026 : un registre (registre/connexions.toml) et sa page, dont chaque état vient d'un essai en lecture fait par l'agent avec les connecteurs du compte du propriétaire, que omega ne peut pas rejouer. Ce qui n'existe pas : un serveur VELYX qui détient ses propres autorisations OAuth, reçoit des webhooks, synchronise seul et révoque une liaison. Connecter et déconnecter se font dans les réglages du compte, pas dans VELYX. |
 
 ## AGENTS
 
@@ -101,7 +102,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
-| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | PROUVÉ | TESTÉ | 2026-11-21 · local · ce dépôt@97bccb00 · 2 exécution(s) · attaque résistée · n°28 | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
+| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | INCONNU | DISPONIBLE | preuve périmée : la revendication a changé depuis | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
 | Une capacité prouvée est reproduite par un second acteur, qui l'écrit au registre (`reproduction-par-un-tiers`) | — | ABSENT | non construite | Non construite. La CI rejoue les preuves étiquetées « ci » à chaque PR (`omega verify`) mais n'écrit pas au registre, et le nom d'acteur consigné n'est qu'une déclaration : l'outil n'attribue donc jamais le niveau VALIDÉ. |
 
 ## SOVEREIGN

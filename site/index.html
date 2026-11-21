@@ -87,6 +87,17 @@ font-weight:800;border:2px solid var(--soft);color:var(--soft)}
 .motto{text-align:center;margin:26px 0 6px;font-size:1.1rem}
 .motto b{color:var(--gold);font-weight:600}
 .foot{text-align:center}
+.cta{display:inline-block;margin-top:14px;padding:10px 18px;border-radius:999px;border:1px solid var(--cy);
+color:var(--fg);text-decoration:none;font-weight:600;background:var(--cell);box-shadow:0 0 18px rgba(53,224,255,.45)}
+.conn{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:0 0 8px}
+.conn .kpi b{font-size:1.05rem;color:var(--fg)}
+.badge{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid}
+.badge.active{color:var(--ok);border-color:var(--ok)}
+.badge.erreur{color:#ff6b7d;border-color:#ff6b7d}
+.badge.aautoriser{color:var(--gold);border-color:var(--gold)}
+.badge.absente{color:var(--soft);border-color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--edge);vertical-align:top}
 @media (max-width:1000px){.stage{grid-template-columns:1fr}.core{order:-1}
 .top{grid-template-columns:1fr;text-align:center}
 .tag.r{text-align:center}.brand{order:-1}.pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -117,7 +128,7 @@ font-weight:800;border:2px solid var(--soft);color:var(--soft)}
 <a class="tile" href="mondo.html" style="--h:345"><span class="ico">M</span><b>MONDO</b><span>Stratégie</span></a>
 <a class="tile" href="artiste.html" style="--h:32"><span class="ico">A</span><b>Artiste-</b><span>Musique</span></a>
 </div></section>
-<div class="core"><div class="orb"><span class="ring"></span><span class="ring b"></span><svg viewBox="0 0 100 80" role="img" aria-label="Emblème VELYX"><defs><linearGradient id="v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#3f8cff"/></linearGradient></defs><path fill="url(#v)" d="M4 4h24l22 44 22-44h24L50 78z"/></svg><strong>VELYX</strong></div><svg class="city" viewBox="0 0 380 150" aria-hidden="true"><defs><linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#3a59c9"/></linearGradient></defs><path d="M40 120a150 110 0 0 1 300 0" fill="rgba(60,120,255,.12)" stroke="rgba(120,190,255,.7)"/><g fill="url(#c)"><rect x="92" y="78" width="14" height="42"/><rect x="110" y="62" width="16" height="58"/><rect x="130" y="84" width="12" height="36"/><rect x="146" y="50" width="18" height="70"/><rect x="168" y="70" width="14" height="50"/><rect x="186" y="34" width="16" height="86"/><rect x="206" y="58" width="16" height="62"/><rect x="226" y="76" width="12" height="44"/><rect x="242" y="64" width="16" height="56"/><rect x="262" y="88" width="14" height="32"/></g><ellipse cx="190" cy="124" rx="170" ry="14" fill="none" stroke="#35e0ff" stroke-width="2"/><ellipse cx="190" cy="136" rx="130" ry="10" fill="none" stroke="rgba(176,107,255,.8)" stroke-width="2"/></svg></div>
+<div class="core"><div class="orb"><span class="ring"></span><span class="ring b"></span><svg viewBox="0 0 100 80" role="img" aria-label="Emblème VELYX"><defs><linearGradient id="v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#3f8cff"/></linearGradient></defs><path fill="url(#v)" d="M4 4h24l22 44 22-44h24L50 78z"/></svg><strong>VELYX</strong></div><svg class="city" viewBox="0 0 380 150" aria-hidden="true"><defs><linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#3a59c9"/></linearGradient></defs><path d="M40 120a150 110 0 0 1 300 0" fill="rgba(60,120,255,.12)" stroke="rgba(120,190,255,.7)"/><g fill="url(#c)"><rect x="92" y="78" width="14" height="42"/><rect x="110" y="62" width="16" height="58"/><rect x="130" y="84" width="12" height="36"/><rect x="146" y="50" width="18" height="70"/><rect x="168" y="70" width="14" height="50"/><rect x="186" y="34" width="16" height="86"/><rect x="206" y="58" width="16" height="62"/><rect x="226" y="76" width="12" height="44"/><rect x="242" y="64" width="16" height="56"/><rect x="262" y="88" width="14" height="32"/></g><ellipse cx="190" cy="124" rx="170" ry="14" fill="none" stroke="#35e0ff" stroke-width="2"/><ellipse cx="190" cy="136" rx="130" ry="10" fill="none" stroke="rgba(176,107,255,.8)" stroke-width="2"/></svg><a class="cta" href="connexions.html">Centre de connexions · 9 actives sur 24</a></div>
 <div class="side"><section class="panel" id="economie"><h2>Tableau de bord : chiffres réels</h2><div class="kpis">
 <div class="kpi"><span>Encaissé</span><b>0 €</b><small>Registre de VELYX et moteur, relevés le 21/11/2026.</small></div>
 <div class="kpi"><span>Commandes</span><b>0</b><small>Aucune offre n&#x27;est en vente au 21/11/2026.</small></div>

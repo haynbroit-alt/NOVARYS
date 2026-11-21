@@ -301,6 +301,17 @@ font-weight:800;border:2px solid var(--soft);color:var(--soft)}
 .motto{text-align:center;margin:26px 0 6px;font-size:1.1rem}
 .motto b{color:var(--gold);font-weight:600}
 .foot{text-align:center}
+.cta{display:inline-block;margin-top:14px;padding:10px 18px;border-radius:999px;border:1px solid var(--cy);
+color:var(--fg);text-decoration:none;font-weight:600;background:var(--cell);box-shadow:0 0 18px rgba(53,224,255,.45)}
+.conn{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:0 0 8px}
+.conn .kpi b{font-size:1.05rem;color:var(--fg)}
+.badge{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid}
+.badge.active{color:var(--ok);border-color:var(--ok)}
+.badge.erreur{color:#ff6b7d;border-color:#ff6b7d}
+.badge.aautoriser{color:var(--gold);border-color:var(--gold)}
+.badge.absente{color:var(--soft);border-color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--edge);vertical-align:top}
 @media (max-width:1000px){.stage{grid-template-columns:1fr}.core{order:-1}
 .top{grid-template-columns:1fr;text-align:center}
 .tag.r{text-align:center}.brand{order:-1}.pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -324,6 +335,8 @@ _CITY = (
     '<ellipse cx="190" cy="124" rx="170" ry="14" fill="none" stroke="#35e0ff" stroke-width="2"/>'
     '<ellipse cx="190" cy="136" rx="130" ry="10" fill="none" stroke="rgba(176,107,255,.8)" stroke-width="2"/></svg>'
 )
+CONNECTION_STATES = {"active": "active", "erreur": "erreur", "à autoriser": "aautoriser", "absente": "absente"}
+CONNECTORS_URL = "https://claude.ai/settings/connectors"
 STEP_STATES = {"fait": ("fait", "✓"), "en cours": ("encours", "…"), "à faire": ("afaire", "")}
 _REPO = "https://github.com/haynbroit-alt/NOVARYS/blob/main"
 
@@ -371,11 +384,59 @@ def load_steps(path: Path) -> list[dict[str, str]]:
     return steps
 
 
+def load_connections(path: Path) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    """Lit les connexions aux services externes et les actions réellement exécutées. Rien n'y est supposé :
+    un état « active » exige la trace d'un essai réel dans « tested »."""
+
+    connections = _board(path, "connection", {"service", "category", "state", "access", "tested", "projects", "detail"})
+    for row in connections:
+        if row["state"] not in CONNECTION_STATES:
+            raise ValueError(
+                f"connexion « {row['service']} » : état inconnu (attendu : {', '.join(CONNECTION_STATES)})"
+            )
+    return connections, _board(path, "action", {"date", "service", "kind", "result"})
+
+
+def _connections_page(connections: list[dict[str, str]], actions: list[dict[str, str]]) -> list[str]:
+    counts = {state: sum(1 for c in connections if c["state"] == state) for state in CONNECTION_STATES}
+    body = [
+        '<p><a href="index.html">← Accueil</a></p>',
+        "<h1>Centre de connexions</h1>",
+        "<p>" + " · ".join(f"{n} {_text(state)}" for state, n in counts.items()) + "</p>",
+        '<p class="soft">Chaque état vient d\'un essai réel en lecture seule, daté. Les liaisons passent par les '
+        "connecteurs officiels du compte du propriétaire (OAuth) : aucun identifiant n'est stocké ici. Toute écriture "
+        "(envoi, publication, paiement, modification) demande sa validation.</p>",
+        f'<p><a class="cta" href="{CONNECTORS_URL}">Connecter, autoriser ou déconnecter un service</a></p>',
+    ]
+    for category in dict.fromkeys(c["category"] for c in connections):
+        body += [f"<h2>{_text(category)}</h2>", '<div class="conn">']
+        body += [
+            f'<div class="kpi"><b>{_text(c["service"])}</b> <span class="badge {CONNECTION_STATES[c["state"]]}">'
+            f"{_text(c['state'])}</span><small>Permissions : {_text(c['access'])}</small>"
+            f"<small>Essai : {_text(c['tested'])}</small><small>Projets : {_text(c['projects'])}</small>"
+            f"<small>{_text(c['detail'])}</small></div>"
+            for c in connections
+            if c["category"] == category
+        ]
+        body.append("</div>")
+    body += ["<h2>Actions réellement exécutées</h2>", "<table><tr><th>Date</th><th>Service</th><th>Action</th>"]
+    body[-1] += "<th>Résultat</th></tr>"
+    body += [
+        f"<tr><td>{_text(a['date'])}</td><td>{_text(a['service'])}</td><td>{_text(a['kind'])}</td>"
+        f"<td>{_text(a['result'])}</td></tr>"
+        for a in actions
+    ]
+    body += ["</table>", '<p class="soft">Synchronisations automatiques : aucune. Webhooks reçus : aucun.</p>']
+    return body
+
+
 def _text(value: str) -> str:
     return escape(" ".join(value.split()))
 
 
-def _home(assets: list[dict[str, str]], measures: list[dict[str, str]], steps: list[dict[str, str]]) -> list[str]:
+def _home(
+    assets: list[dict[str, str]], measures: list[dict[str, str]], steps: list[dict[str, str]], active: str
+) -> list[str]:
     """Accueil : les projets à gauche, le cœur au centre, l'économie et les priorités à droite, piliers et cycle."""
 
     def link(asset: dict[str, str]) -> str:
@@ -421,7 +482,8 @@ def _home(assets: list[dict[str, str]], measures: list[dict[str, str]], steps: l
         *tiles,
         "</div></section>",
         f'<div class="core"><div class="orb"><span class="ring"></span><span class="ring b"></span>{_LOGO}'
-        f"<strong>VELYX</strong></div>{_CITY}</div>",
+        f"<strong>VELYX</strong></div>{_CITY}"
+        f'<a class="cta" href="connexions.html">Centre de connexions · {active}</a></div>',
         '<div class="side"><section class="panel" id="economie"><h2>Tableau de bord : chiffres réels</h2>'
         '<div class="kpis">',
         *kpis,
@@ -442,15 +504,19 @@ def _home(assets: list[dict[str, str]], measures: list[dict[str, str]], steps: l
 
 
 def site_pages(
-    assets: list[dict[str, str]], measures: list[dict[str, str]], steps: list[dict[str, str]]
+    assets: list[dict[str, str]],
+    measures: list[dict[str, str]],
+    steps: list[dict[str, str]],
+    connections: tuple[list[dict[str, str]], list[dict[str, str]]],
 ) -> dict[str, str]:
     """Portail statique : une page d'accueil et une page par actif, tirées du même registre que ACTIFS.md."""
 
     slugs = [asset_slug(asset["name"]) for asset in assets]
-    if "index" in slugs or "" in slugs or len(set(slugs)) != len(slugs):
+    if {"index", "connexions", ""} & set(slugs) or len(set(slugs)) != len(slugs):
         raise ValueError("deux actifs donneraient la même page du site, ou une page sans nom")
     note = '<p class="soft">Page générée depuis le registre public des actifs. Aucune promesse de résultat.</p>'
-    pages: dict[str, str] = {}
+    active = f"{sum(1 for c in connections[0] if c['state'] == 'active')} actives sur {len(connections[0])}"
+    pages = {"connexions.html": _site_page("Connexions — VELYX", _connections_page(*connections))}
     for asset, slug in zip(assets, slugs, strict=True):
         body = ['<p><a href="index.html">← Tous les projets</a></p>', f"<h1>{_text(asset['title'])}</h1>"]
         body.append(f'<p class="soft">{_text(asset["name"])} · observé le {_text(asset["observed"])}</p>')
@@ -459,5 +525,7 @@ def site_pages(
         for key, title in ASSET_FIELDS.items():
             body += [f"<h2>{escape(title)}</h2>", f"<p>{_text(asset[key])}</p>"]
         pages[f"{slug}.html"] = _site_page(f"{asset['name']} — VELYX", [*body, note])
-    pages["index.html"] = _site_page("VELYX — un écosystème, une seule vision", _home(assets, measures, steps), "home")
+    pages["index.html"] = _site_page(
+        "VELYX — un écosystème, une seule vision", _home(assets, measures, steps, active), "home"
+    )
     return pages

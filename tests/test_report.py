@@ -13,6 +13,7 @@ from novarys_omega.report import (
     capabilities_markdown,
     level_of,
     load_assets,
+    load_connections,
     load_measures,
     load_steps,
     site_pages,
@@ -138,15 +139,25 @@ def test_site_has_one_escaped_page_per_asset(tmp_path: Path) -> None:
     step = '[[step]]\nlabel = "Auditer"\nstate = "fait"\nsource = "essai"\nlink = "#projets"\n'
     board.write_text('[[measure]]\nlabel = "Encaissé"\nvalue = "0 €"\nsource = "essai"\n' + step, encoding="utf-8")
     measures, steps = load_measures(board), load_steps(board)
-    pages = site_pages(load_assets(path), measures, steps)
+    link = tmp_path / "connexions.toml"
+    row = '[[connection]]\nservice = "Stripe"\ncategory = "Finances"\nstate = "active"\naccess = "lecture"\n'
+    row += 'tested = "essai"\nprojects = "demo"\ndetail = "rien"\n'
+    link.write_text(row, encoding="utf-8")
+    links = load_connections(link)
+    pages = site_pages(load_assets(path), measures, steps, links)
+    assert '<span class="badge active">active</span>' in pages["connexions.html"]
+    assert "Centre de connexions · 1 actives sur 1" in pages["index.html"]
+    link.write_text(row.replace('"active"', '"branchée"'), encoding="utf-8")
+    with pytest.raises(ValueError, match="état inconnu"):
+        load_connections(link)
     home = pages["index.html"]
-    assert sorted(pages) == ["demo.html", "index.html"]
+    assert sorted(pages) == ["connexions.html", "demo.html", "index.html"]
     assert 'href="demo.html"' in home and "Nos 1 projets" in home and "Priorités immédiates" in home
     assert "<b>0 €</b><small>essai</small>" in home and '<a class="step fait" href="#projets">' in home
     assert "&lt;b&gt;fictif&lt;/b&gt;" in pages["demo.html"] and "<b>fictif" not in pages["demo.html"]
     path.write_text(ASSET + ASSET.replace('name = "demo"', 'name = "Demo-"'), encoding="utf-8")
     with pytest.raises(ValueError, match="même page"):
-        site_pages(load_assets(path), measures, steps)
+        site_pages(load_assets(path), measures, steps, links)
     board.write_text('[[measure]]\nlabel = "Revenus"\nvalue = "1 248 €"\n', encoding="utf-8")
     with pytest.raises(ValueError, match="source"):
         load_measures(board)

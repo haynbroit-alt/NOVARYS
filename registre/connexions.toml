@@ -1,0 +1,239 @@
+# Connexions de VELYX aux services externes. Public : aucun nom de compte, aucun identifiant, aucun chiffre.
+# État : « active » (un essai réel en lecture a répondu), « erreur », « à autoriser », « absente ».
+# Les liaisons sont celles du compte du propriétaire, par connecteurs officiels (OAuth) ; rien n'est stocké ici.
+
+[[connection]]
+service = "Stripe"
+category = "Finances"
+state = "active"
+access = "lecture du solde ; webhooks refusés (403) ; écriture sur validation"
+tested = "21/11/2026, lecture du solde : réponse 200"
+projects = "Alll, Velyx"
+detail = "Encaissements lisibles. La lecture des webhooks n'est pas accordée à cette liaison."
+
+[[connection]]
+service = "PayPal"
+category = "Finances"
+state = "à autoriser"
+access = "aucune"
+tested = "aucun : liaison non autorisée"
+projects = "aucun"
+detail = "Connecteur disponible, à autoriser par le propriétaire."
+
+[[connection]]
+service = "Banques"
+category = "Finances"
+state = "absente"
+access = "aucune"
+tested = "aucun"
+projects = "aucun"
+detail = "Aucun connecteur bancaire. À ne relier que par l'interface officielle de la banque."
+
+[[connection]]
+service = "QuickBooks (facturation)"
+category = "Finances"
+state = "à autoriser"
+access = "aucune"
+tested = "21/11/2026 : reconnexion demandée par le service"
+projects = "aucun"
+detail = "Session expirée : à reconnecter."
+
+[[connection]]
+service = "Gmail"
+category = "Communications"
+state = "active"
+access = "lecture, brouillons ; envoi sur validation"
+tested = "21/11/2026, liste des libellés : réponse reçue"
+projects = "REACHER, Velyx"
+detail = "Aucun message envoyé à ce jour."
+
+[[connection]]
+service = "Outlook"
+category = "Communications"
+state = "à autoriser"
+access = "aucune"
+tested = "aucun : liaison non autorisée"
+projects = "aucun"
+detail = "Connecteur disponible, à autoriser."
+
+[[connection]]
+service = "WhatsApp"
+category = "Communications"
+state = "à autoriser"
+access = "aucune"
+tested = "21/11/2026 : reconnexion demandée par le service"
+projects = "aucun"
+detail = "Passe par un outil tiers relié au compte ; session expirée."
+
+[[connection]]
+service = "Telegram"
+category = "Communications"
+state = "absente"
+access = "aucune"
+tested = "aucun"
+projects = "aucun"
+detail = "Aucun connecteur relié."
+
+[[connection]]
+service = "Agenda Google"
+category = "Communications"
+state = "active"
+access = "lecture ; création sur validation"
+tested = "21/11/2026, liste des agendas : réponse reçue"
+projects = "REACHER"
+detail = "Aucun événement créé."
+
+[[connection]]
+service = "TikTok"
+category = "Réseaux sociaux"
+state = "active"
+access = "statistiques, programmation sur validation"
+tested = "21/11/2026, via l'outil de gestion des réseaux : compte relié"
+projects = "REACHER"
+detail = "Relié par l'outil de gestion des réseaux."
+
+[[connection]]
+service = "YouTube"
+category = "Réseaux sociaux"
+state = "active"
+access = "statistiques, programmation sur validation"
+tested = "21/11/2026, via l'outil de gestion des réseaux : compte relié"
+projects = "REACHER"
+detail = "Relié par l'outil de gestion des réseaux."
+
+[[connection]]
+service = "Facebook"
+category = "Réseaux sociaux"
+state = "absente"
+access = "aucune"
+tested = "21/11/2026 : non relié dans l'outil de gestion des réseaux"
+projects = "aucun"
+detail = "À relier par le propriétaire dans l'outil de gestion des réseaux (R3)."
+
+[[connection]]
+service = "Instagram"
+category = "Réseaux sociaux"
+state = "absente"
+access = "aucune"
+tested = "21/11/2026 : non relié dans l'outil de gestion des réseaux"
+projects = "aucun"
+detail = "À relier par le propriétaire (R3)."
+
+[[connection]]
+service = "X"
+category = "Réseaux sociaux"
+state = "absente"
+access = "aucune"
+tested = "21/11/2026 : non relié dans l'outil de gestion des réseaux"
+projects = "aucun"
+detail = "À relier par le propriétaire (R3)."
+
+[[connection]]
+service = "LinkedIn"
+category = "Réseaux sociaux"
+state = "absente"
+access = "aucune"
+tested = "21/11/2026 : non relié dans l'outil de gestion des réseaux"
+projects = "aucun"
+detail = "À relier par le propriétaire (R3)."
+
+[[connection]]
+service = "Pinterest"
+category = "Réseaux sociaux"
+state = "absente"
+access = "aucune"
+tested = "21/11/2026 : non relié dans l'outil de gestion des réseaux"
+projects = "aucun"
+detail = "À relier par le propriétaire (R3)."
+
+[[connection]]
+service = "Shopify"
+category = "Business"
+state = "erreur"
+access = "aucune tant que l'erreur dure"
+tested = "21/11/2026, lecture de la boutique : refusée par Shopify"
+projects = "aucun"
+detail = "Boutique indisponible pour l'API : à régulariser côté Shopify par le propriétaire, ou à abandonner (décision déjà notée)."
+
+[[connection]]
+service = "WooCommerce et marketplaces"
+category = "Business"
+state = "absente"
+access = "aucune"
+tested = "aucun"
+projects = "aucun"
+detail = "Aucune boutique de ce type connue du registre."
+
+[[connection]]
+service = "CRM (HubSpot)"
+category = "Business"
+state = "active"
+access = "lecture et écriture des contacts, sociétés, affaires ; écriture sur validation"
+tested = "21/11/2026, lecture du profil : réponse reçue"
+projects = "REACHER, Velyx"
+detail = "Compte non configuré : aucun client enregistré par VELYX."
+
+[[connection]]
+service = "Prospection (Apollo)"
+category = "Business"
+state = "active"
+access = "recherche de sociétés et de contacts ; séquences sur validation"
+tested = "21/11/2026, lecture du profil : réponse reçue"
+projects = "Velyx, REACHER"
+detail = "Aucune recherche payante ni envoi lancé."
+
+[[connection]]
+service = "Google Drive"
+category = "Production et stockage"
+state = "active"
+access = "lecture ; création de fichiers sur validation"
+tested = "21/11/2026, liste des fichiers récents : réponse reçue"
+projects = "Velyx (sauvegarde privée), REACHER"
+detail = "Sert déjà à la sauvegarde privée de VELYX."
+
+[[connection]]
+service = "Dropbox"
+category = "Production et stockage"
+state = "absente"
+access = "aucune"
+tested = "aucun"
+projects = "aucun"
+detail = "Aucun connecteur relié."
+
+[[connection]]
+service = "OneDrive"
+category = "Production et stockage"
+state = "à autoriser"
+access = "aucune"
+tested = "aucun : liaison non autorisée"
+projects = "aucun"
+detail = "Passe par la liaison Microsoft, à autoriser."
+
+[[connection]]
+service = "Création (Canva)"
+category = "Production et stockage"
+state = "active"
+access = "lecture et création de visuels"
+tested = "21/11/2026, liste des chartes : réponse reçue, vide"
+projects = "REACHER"
+detail = "Aucune charte graphique enregistrée."
+
+# Actions réellement exécutées par l'agent sur ces services. Une écriture n'y figure qu'après validation.
+
+[[action]]
+date = "21/11/2026"
+service = "Stripe, Gmail, Agenda, Drive, CRM, Prospection, Canva, outil de gestion des réseaux"
+kind = "Essai de liaison en lecture seule"
+result = "Réponse reçue"
+
+[[action]]
+date = "21/11/2026"
+service = "Shopify"
+kind = "Essai de liaison en lecture seule"
+result = "Refusé par le service"
+
+[[action]]
+date = "21/11/2026"
+service = "Tous"
+kind = "Écritures (envoi, publication, paiement, modification)"
+result = "Aucune"
