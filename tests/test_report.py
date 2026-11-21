@@ -132,36 +132,49 @@ def test_assets_need_every_heading(tmp_path: Path) -> None:
             load_assets(path)
 
 
-def test_site_has_one_escaped_page_per_asset(tmp_path: Path) -> None:
+def test_site_is_six_pages_plus_one_per_asset(tmp_path: Path, charter: Callable[[str], Charter]) -> None:
     path = tmp_path / "actifs.toml"
     path.write_text(ASSET.replace('state = "fictif"', 'state = "<b>fictif</b>"'), encoding="utf-8")
     board = tmp_path / "tableau.toml"
-    step = '[[step]]\nlabel = "Auditer"\nstate = "fait"\nsource = "essai"\nlink = "#projets"\n'
+    step = '[[step]]\nlabel = "Auditer"\nstate = "fait"\nsource = "essai"\nlink = "projets.html"\n'
     board.write_text('[[measure]]\nlabel = "Encaissé"\nvalue = "0 €"\nsource = "essai"\n' + step, encoding="utf-8")
-    measures, steps = load_measures(board), load_steps(board)
     link = tmp_path / "connexions.toml"
-    row = '[[connection]]\nservice = "Stripe"\ncategory = "Finances"\nstate = "active"\naccess = "lecture"\n'
-    row += 'tested = "essai"\nprojects = "demo"\ndetail = "rien"\n'
+    row = '[[connection]]\nservice = "Boutique"\ncategory = "Business"\nstate = "erreur"\naccess = "aucune"\n'
+    row += 'tested = "essai"\nprojects = "demo"\ndetail = "refusée"\n'
     link.write_text(row, encoding="utf-8")
-    links = load_connections(link)
-    pages = site_pages(load_assets(path), measures, steps, links)
-    assert '<span class="badge active">active</span>' in pages["connexions.html"]
-    assert "Centre de connexions · 1 actives sur 1" in pages["index.html"]
-    link.write_text(row.replace('"active"', '"branchée"'), encoding="utf-8")
-    with pytest.raises(ValueError, match="état inconnu"):
-        load_connections(link)
-    home = pages["index.html"]
-    assert sorted(pages) == ["connexions.html", "demo.html", "index.html"]
-    assert 'href="demo.html"' in home and "Nos 1 projets" in home and "Priorités immédiates" in home
-    assert "<b>0 €</b><small>essai</small>" in home and '<a class="step fait" href="#projets">' in home
+    loaded = charter(TEXT)
+    proof = record(loaded, loaded.claims[0].id, "PROUVE")
+
+    def build() -> dict[str, str]:
+        return site_pages(
+            load_assets(path), load_measures(board), load_steps(board), load_connections(link), loaded, [proof]
+        )
+
+    pages = build()
+    names = ["activite", "connexions", "demo", "index", "intelligence", "parametres", "projets"]
+    assert sorted(pages) == [f"{name}.html" for name in names]
+    assert all('<a href="parametres.html"' in page and "<nav" in page for page in pages.values())
+    assert "<b>0 €</b>" in pages["index.html"] and '<span class="tag bad">erreur</span>' in pages["index.html"]
+    assert 'href="demo.html"' in pages["projets.html"] and 'aria-current="page">Projets' in pages["demo.html"]
+    assert '<span class="tag ok">fait</span>' in pages["activite.html"] and "PROUVÉ" in pages["activite.html"]
+    assert "Matrice complète" in pages["intelligence.html"]
     assert "&lt;b&gt;fictif&lt;/b&gt;" in pages["demo.html"] and "<b>fictif" not in pages["demo.html"]
     path.write_text(ASSET + ASSET.replace('name = "demo"', 'name = "Demo-"'), encoding="utf-8")
     with pytest.raises(ValueError, match="même page"):
-        site_pages(load_assets(path), measures, steps, links)
+        build()
+    path.write_text(ASSET.replace('name = "demo"', 'name = "Projets"'), encoding="utf-8")
+    with pytest.raises(ValueError, match="réservée"):
+        build()
     board.write_text('[[measure]]\nlabel = "Revenus"\nvalue = "1 248 €"\n', encoding="utf-8")
     with pytest.raises(ValueError, match="source"):
         load_measures(board)
-    for broken, message in [(step.replace("fait", "gagné"), "état inconnu"), (step.replace("#projets", "x"), "lien")]:
+    for broken, message in [
+        (step.replace("fait", "gagné"), "état inconnu"),
+        (step.replace("projets.html", "x"), "lien"),
+    ]:
         board.write_text(broken, encoding="utf-8")
         with pytest.raises(ValueError, match=message):
             load_steps(board)
+    link.write_text(row.replace('"erreur"', '"branchée"'), encoding="utf-8")
+    with pytest.raises(ValueError, match="état inconnu"):
+        load_connections(link)

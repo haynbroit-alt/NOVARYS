@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projets — VELYX</title>
+<style>
+:root{--bg:#fff;--fg:#14181f;--soft:#5b6472;--line:#e3e6ea;--card:#f7f8fa;--accent:#1f5eff;
+--ok:#12805c;--warn:#a15c00;--bad:#c0303b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--fg:#e8ebef;--soft:#9aa3af;--line:#262b33;--card:#161a20;
+--accent:#7aa2ff;--ok:#4cc79a;--warn:#e0a85a;--bad:#f0808a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{position:sticky;top:0;z-index:1;display:flex;gap:2px;overflow-x:auto;padding:0 12px;background:var(--bg);
+border-bottom:1px solid var(--line)}
+nav a,nav strong{padding:13px 10px;white-space:nowrap}
+nav a{text-decoration:none;color:var(--soft);border-bottom:2px solid transparent}
+nav a[aria-current]{color:var(--fg);border-color:var(--accent);font-weight:600}
+main{max-width:960px;margin:0 auto;padding:20px 16px 56px}
+h1{font-size:1.35rem;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+h2{font-size:.95rem;margin:28px 0 10px}
+p{margin:0 0 12px;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.soft{color:var(--soft);font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card b{display:block;font-size:1.3rem;line-height:1.3;font-variant-numeric:tabular-nums}
+.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:block;padding:11px 12px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;
+overflow-wrap:anywhere}
+.row:last-child{border-bottom:0}
+a.row:hover,a.row:focus-visible{background:var(--card)}
+.row span:not(.tag){display:block;color:var(--soft);font-size:.85rem}
+.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;border:1px solid;font-size:.72rem;
+font-weight:600;vertical-align:middle}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.off{color:var(--soft)}
+.btn{display:inline-block;padding:8px 14px;border-radius:8px;background:var(--accent);color:var(--bg);
+text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<nav aria-label="Navigation"><strong>VELYX</strong><a href="index.html">Accueil</a><a href="projets.html" aria-current="page">Projets</a><a href="connexions.html">Connexions</a><a href="activite.html">Activité</a><a href="intelligence.html">Intelligence</a><a href="parametres.html">Paramètres</a></nav>
+<main>
+<h1>Projets</h1>
+<div class="rows">
+<a class="row" href="alll.html"><b>Alll — Livret maison</b><span>L&#x27;histoire de votre maison, livret personnalisé à 29 €</span><span>Prochaine action : Décision datée : pour vendre avant le 20/12/2026 (critère d&#x27;arrêt du dépôt : moins de 30 commandes pour environ 1 000 visites), le statut doit être déposé dans les jours qui viennent, le numéro d&#x27;entreprise mettant environ deux semaines selon le dépôt. Puis session 1 de docs/MISE-EN-ROUTE.md, environ 1 heure.</span></a>
+<a class="row" href="velyxprospection.html"><b>Velyx-prospection- — Prospection</b><span>VELYX, fichiers de prospection fondés sur des signaux publics</span><span>Prochaine action : Propriétaire : déposer le statut (gratuit, 20 à 30 minutes selon docs/statut-micro-entreprise.md du dépôt). Agent, sur accord : régénérer la fiche des 4 cabinets et le brouillon de message. C&#x27;est le chemin le plus court vers un premier encaissement sans dépense préalable.</span></a>
+<a class="row" href="ref.html"><b>Ref — OMNISEARCH</b><span>NOVARYS OMNISEARCH, conformité des droits face aux IA</span><span>Prochaine action : Relire docs/pilote/MESSAGES.md et envoyer une première demande de pilote. Ajouter une CI, gratuite sur un dépôt public.</span></a>
+<a class="row" href="paiejuste.html"><b>Paie-juste — Paie</b><span>Paie Juste, vérifier sa paie hors ligne</span><span>Prochaine action : Mesurer l&#x27;usage avant toute décision (compteur sans cookie). Sans audience mesurée, aucune action rentable identifiée.</span></a>
+<a class="row" href="clippreuve.html"><b>Clip-preuve — Preuve vidéo</b><span>Clip-preuve, un clip vertical et sa carte de preuve</span><span>Prochaine action : Aucune action rentable sans test de demande. Piste à 0 € : proposer le service à la pièce, à la main, à quelques créateurs.</span></a>
+<a class="row" href="jeun.html"><b>Jeun — MULTIVERSE</b><span>MULTIVERSE, plusieurs VOD d&#x27;un même événement sur une horloge commune</span><span>Prochaine action : Activer le compteur, puis lancer le test de 7 jours (seuil du dépôt : 30 visiteurs inconnus et 3 liens créés par d&#x27;autres).</span></a>
+<a class="row" href="toonomatic.html"><b>Toon-o-Matic — Animation</b><span>Toon-o-Matic, usine de web-série animée</span><span>Prochaine action : Aucune à 0 € au-delà du mode simulé. À reprendre quand une enveloppe de dépense existera.</span></a>
+<a class="row" href="hive.html"><b>Hive — Agents</b><span>HIVE, colonie d&#x27;agents sous contrôle humain</span><span>Prochaine action : Aucune action rentable directe. Décision à prendre : en faire la brique AGENTS du moteur, ou le geler.</span></a>
+<a class="row" href="logiciel.html"><b>Logiciel- — OMNIA</b><span>OMNIA, un logiciel qui transforme les besoins d&#x27;une activité en constats, décisions et actions</span><span>Prochaine action : Aucune action rentable directe. Décision du propriétaire : en faire le tableau de bord du portail velyx.org, ou le geler au profit du moteur.</span></a>
+<a class="row" href="sovereign.html"><b>SOVEREIGN — Noyau</b><span>Le moteur : noyau, registre financier, mémoire, validations humaines</span><span>Prochaine action : Décider de la visibilité du dépôt pour relancer le cycle quotidien, puis y enregistrer le premier encaissement réel quand il existera.</span></a>
+<a class="row" href="novarys.html"><b>NOVARYS — Registre</b><span>Ce dépôt : charte, protocole de preuves Ω, registres</span><span>Prochaine action : Faire de la CI le second acteur du registre ; décider de la visibilité du dépôt.</span></a>
+<a class="row" href="tr.html"><b>Tr — Travail commun</b><span>Page de travail commune de GALILÉE, CORTEX et LAVOISIER</span><span>Prochaine action : Aucune action rentable identifiée. Garder Tr comme référence et archiver les trois copies réduirait la dispersion : décision du propriétaire.</span></a>
+<a class="row" href="1.html"><b>1 — CORTEX</b><span>CORTEX, boucle cognitive qui pilote une activité inconnue</span><span>Prochaine action : Aucune. Voir Tr.</span></a>
+<a class="row" href="all.html"><b>All — Galilée</b><span>Galilée, agent scientifique qui retrouve une loi cachée</span><span>Prochaine action : Aucune. Voir Tr.</span></a>
+<a class="row" href="a.html"><b>A — LAVOISIER</b><span>LAVOISIER, reconstruire les comptes d&#x27;une entreprise opaque</span><span>Prochaine action : Aucune. Voir Tr.</span></a>
+<a class="row" href="mondo.html"><b>MONDO — Stratégie</b><span>MONDO, document de stratégie</span><span>Prochaine action : Aucune action rentable identifiée.</span></a>
+<a class="row" href="artiste.html"><b>Artiste- — Musique</b><span>Document fondateur d&#x27;un projet musical</span><span>Prochaine action : Aucune action rentable identifiée dans ce cycle.</span></a>
+</div>
+</main>
+</body>
+</html>
