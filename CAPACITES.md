@@ -3,7 +3,7 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 16 fonction(s) sur 24 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 15 fonction(s) sur 24 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
@@ -22,7 +22,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | BUSINESS | 6 | · | · | 1 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
 | MEMORY | · | 1 | 1 | 1 | · | · |
-| OMEGA | 1 | 1 | · | · | · | · |
+| OMEGA | 1 | · | · | 1 | · | · |
 | SOVEREIGN | · | · | · | 2 | · | · |
 
 ## Scénarios de validation (cahier des charges, section 14)
@@ -101,7 +101,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
-| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | INCONNU | DISPONIBLE | preuve périmée : la revendication a changé depuis | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
+| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | PROUVÉ | TESTÉ | 2026-11-21 · local · ce dépôt@5dfe3489 · 2 exécution(s) · attaque résistée · n°25 | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
 | Une capacité prouvée est reproduite par un second acteur, qui l'écrit au registre (`reproduction-par-un-tiers`) | — | ABSENT | non construite | Non construite. La CI rejoue les preuves étiquetées « ci » à chaque PR (`omega verify`) mais n'écrit pas au registre, et le nom d'acteur consigné n'est qu'une déclaration : l'outil n'attribue donc jamais le niveau VALIDÉ. |
 
 ## SOVEREIGN
