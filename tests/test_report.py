@@ -8,7 +8,14 @@ import pytest
 
 from conftest import ASSET
 from novarys_omega.model import Charter, Level
-from novarys_omega.report import assets_markdown, capabilities_markdown, level_of, load_assets, site_pages
+from novarys_omega.report import (
+    assets_markdown,
+    capabilities_markdown,
+    level_of,
+    load_assets,
+    load_measures,
+    site_pages,
+)
 
 TEXT = """
 [[claim]]
@@ -126,10 +133,19 @@ def test_assets_need_every_heading(tmp_path: Path) -> None:
 def test_site_has_one_escaped_page_per_asset(tmp_path: Path) -> None:
     path = tmp_path / "actifs.toml"
     path.write_text(ASSET.replace('state = "fictif"', 'state = "<b>fictif</b>"'), encoding="utf-8")
-    pages = site_pages(load_assets(path))
+    board = tmp_path / "tableau.toml"
+    board.write_text('[[measure]]\nlabel = "Encaissé"\nvalue = "0 €"\nsource = "essai"\n', encoding="utf-8")
+    measures = load_measures(board)
+    pages = site_pages(load_assets(path), measures)
+    assert (
+        '<span class="big">0 €</span>Encaissé' in pages["index.html"] and "Priorités immédiates" in pages["index.html"]
+    )
     assert sorted(pages) == ["demo.html", "index.html"]
     assert 'href="demo.html"' in pages["index.html"] and "1 projets" in pages["index.html"]
     assert "&lt;b&gt;fictif&lt;/b&gt;" in pages["demo.html"] and "<b>fictif" not in pages["demo.html"]
     path.write_text(ASSET + ASSET.replace('name = "demo"', 'name = "Demo-"'), encoding="utf-8")
     with pytest.raises(ValueError, match="même page"):
-        site_pages(load_assets(path))
+        site_pages(load_assets(path), measures)
+    board.write_text('[[measure]]\nlabel = "Revenus"\nvalue = "1 248 €"\n', encoding="utf-8")
+    with pytest.raises(ValueError, match="source"):
+        load_measures(board)

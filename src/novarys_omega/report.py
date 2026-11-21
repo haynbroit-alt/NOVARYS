@@ -33,7 +33,9 @@ ASSET_FIELDS = {
     "blockers": "Blocages",
     "next_action": "Prochaine action rentable",
 }
-_ASSET_KEYS = {"name", "title", "observed", "commit", *ASSET_FIELDS}
+_ASSET_KEYS = {"name", "title", "observed", "commit", "role", *ASSET_FIELDS}
+# Nombre d'actifs présentés comme priorités sur l'accueil du site : les premiers du registre, déjà classé.
+PRIORITIES = 5
 
 
 def proofs_for(charter: Charter, claim: Claim, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -231,6 +233,9 @@ a{color:var(--accent)}
 .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;
 text-decoration:none;color:inherit}
 .card strong{display:block;font-size:1.05rem;color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.grid .card{margin:0}
+.big{display:block;font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
 """
 
 
@@ -249,7 +254,20 @@ def _site_page(title: str, body: list[str]) -> str:
     return "\n".join([head, *body, "</main>\n</body>\n</html>\n"])
 
 
-def site_pages(assets: list[dict[str, str]]) -> dict[str, str]:
+def load_measures(path: Path) -> list[dict[str, str]]:
+    """Lit les mesures du tableau de bord public. Une mesure sans source n'est pas une mesure : elle est refusée."""
+
+    measures: list[dict[str, str]] = []
+    for index, table in enumerate(tomllib.loads(path.read_text(encoding="utf-8")).get("measure", []), start=1):
+        if set(table) != {"label", "value", "source"} or not all(
+            isinstance(v, str) and v.strip() for v in table.values()
+        ):
+            raise ValueError(f"mesure n°{index} : il faut exactement « label », « value » et « source », non vides")
+        measures.append({key: value.strip() for key, value in table.items()})
+    return measures
+
+
+def site_pages(assets: list[dict[str, str]], measures: list[dict[str, str]]) -> dict[str, str]:
     """Portail statique : une page d'accueil et une page par actif, tirées du même registre que ACTIFS.md."""
 
     def text(value: str) -> str:
@@ -263,16 +281,37 @@ def site_pages(assets: list[dict[str, str]]) -> dict[str, str]:
         "<h1>VELYX</h1>",
         f"<p>{len(assets)} projets, un seul registre. Chaque projet a sa page : état réel, preuves, blocages, "
         "prochaine action.</p>",
-        '<p class="soft">Classés du plus proche d\'un encaissement au plus éloigné.</p>',
+        "<h2>Chiffres réels</h2>",
+        '<div class="grid">',
+        *(
+            f'<div class="card"><span class="big">{text(m["value"])}</span>{text(m["label"])}'
+            f'<br><span class="soft">{text(m["source"])}</span></div>'
+            for m in measures
+        ),
+        "</div>",
+        "<p class=\"soft\">Un chiffre sans mesure s'écrit INCONNU. Aucun n'est une estimation.</p>",
     ]
+    roles = [a for a in assets if "role" in a]
+    if roles:
+        index += ["<h2>Le noyau</h2>", '<div class="grid">']
+        index += [
+            f'<a class="card" href="{asset_slug(a["name"])}.html"><strong>{text(a["name"])}</strong>'
+            f"{text(a['role'])}</a>"
+            for a in roles
+        ]
+        index.append("</div>")
     pages: dict[str, str] = {}
-    for asset, slug in zip(assets, slugs, strict=True):
+    for position, (asset, slug) in enumerate(zip(assets, slugs, strict=True)):
+        if position in (0, PRIORITIES):
+            index.append(f"<h2>{'Priorités immédiates' if position == 0 else 'Les autres projets'}</h2>")
         index.append(
             f'<a class="card" href="{slug}.html"><strong>{text(asset["name"])}</strong>{text(asset["title"])}'
             f'<br><span class="soft">Prochaine action : {text(asset["next_action"])}</span></a>'
         )
         body = ['<p><a href="index.html">← Tous les projets</a></p>', f"<h1>{text(asset['title'])}</h1>"]
         body.append(f'<p class="soft">{text(asset["name"])} · observé le {text(asset["observed"])}</p>')
+        if "role" in asset:
+            body += ["<h2>Rôle dans le noyau</h2>", f"<p>{text(asset['role'])}</p>"]
         for key, title in ASSET_FIELDS.items():
             body += [f"<h2>{escape(title)}</h2>", f"<p>{text(asset[key])}</p>"]
         pages[f"{slug}.html"] = _site_page(f"{asset['name']} — VELYX", [*body, note])

@@ -43,6 +43,7 @@ def root(tmp_path: Path) -> Path:
     path = tmp_path / "novarys"
     (path / "registre").mkdir(parents=True)
     (path / "registre" / "actifs.toml").write_text(ASSET, encoding="utf-8")
+    (path / "registre" / "tableau.toml").write_text("", encoding="utf-8")
     git(tmp_path, "init", "-q", str(path))
     return path
 
