@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import tomllib
+from html import escape
 from pathlib import Path
 from typing import Any
 
@@ -214,3 +215,66 @@ def assets_markdown(assets: list[dict[str, str]]) -> str:
         lines += [f"- **{title}** : {' '.join(asset[key].split())}" for key, title in ASSET_FIELDS.items()]
     lines.append("")
     return "\n".join(lines)
+
+
+_SITE_STYLE = """:root{--bg:#f6f7f5;--fg:#17263a;--soft:#4a5868;--line:#c9d0d3;--card:#fff;--accent:#0b6b5d}
+@media (prefers-color-scheme:dark){:root{--bg:#10161e;--fg:#e6ebef;--soft:#a9b4be;--line:#2c3846;--card:#161e28;
+--accent:#5fd0bd}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.6rem;line-height:1.25;margin:0 0 8px;text-wrap:balance}
+h2{font-size:1rem;margin:24px 0 4px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+p{margin:0 0 12px;overflow-wrap:anywhere}
+a{color:var(--accent)}
+.soft{color:var(--soft);font-size:.9rem}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;
+text-decoration:none;color:inherit}
+.card strong{display:block;font-size:1.05rem;color:var(--accent)}
+"""
+
+
+def asset_slug(name: str) -> str:
+    """Nom de page d'un actif : minuscules, lettres et chiffres seulement."""
+
+    return "".join(c for c in name.lower() if c.isalnum())
+
+
+def _site_page(title: str, body: list[str]) -> str:
+    head = (
+        '<!doctype html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f"<title>{escape(title)}</title>\n<style>\n{_SITE_STYLE}</style>\n</head>\n<body>\n<main>"
+    )
+    return "\n".join([head, *body, "</main>\n</body>\n</html>\n"])
+
+
+def site_pages(assets: list[dict[str, str]]) -> dict[str, str]:
+    """Portail statique : une page d'accueil et une page par actif, tirées du même registre que ACTIFS.md."""
+
+    def text(value: str) -> str:
+        return escape(" ".join(value.split()))
+
+    slugs = [asset_slug(asset["name"]) for asset in assets]
+    if "index" in slugs or "" in slugs or len(set(slugs)) != len(slugs):
+        raise ValueError("deux actifs donneraient la même page du site, ou une page sans nom")
+    note = '<p class="soft">Page générée depuis le registre public des actifs. Aucune promesse de résultat.</p>'
+    index = [
+        "<h1>VELYX</h1>",
+        f"<p>{len(assets)} projets, un seul registre. Chaque projet a sa page : état réel, preuves, blocages, "
+        "prochaine action.</p>",
+        '<p class="soft">Classés du plus proche d\'un encaissement au plus éloigné.</p>',
+    ]
+    pages: dict[str, str] = {}
+    for asset, slug in zip(assets, slugs, strict=True):
+        index.append(
+            f'<a class="card" href="{slug}.html"><strong>{text(asset["name"])}</strong>{text(asset["title"])}'
+            f'<br><span class="soft">Prochaine action : {text(asset["next_action"])}</span></a>'
+        )
+        body = ['<p><a href="index.html">← Tous les projets</a></p>', f"<h1>{text(asset['title'])}</h1>"]
+        body.append(f'<p class="soft">{text(asset["name"])} · observé le {text(asset["observed"])}</p>')
+        for key, title in ASSET_FIELDS.items():
+            body += [f"<h2>{escape(title)}</h2>", f"<p>{text(asset[key])}</p>"]
+        pages[f"{slug}.html"] = _site_page(f"{asset['name']} — VELYX", [*body, note])
+    pages["index.html"] = _site_page("VELYX — les projets", [*index, note])
+    return pages

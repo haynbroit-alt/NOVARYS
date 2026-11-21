@@ -135,6 +135,22 @@ blockers = "Aucun modèle de langage branché (jour 2 de sa feuille de route). P
 next_action = "Aucune action rentable directe. Décision à prendre : en faire la brique AGENTS du moteur, ou le geler."
 
 [[asset]]
+name = "Logiciel-"
+title = "OMNIA, un logiciel qui transforme les besoins d'une activité en constats, décisions et actions"
+observed = "2026-11-21"
+commit = "48ab7b837bc592053e900b4af030f7a7b8fcb66a"
+location = "github.com/haynbroit-alt/Logiciel-, dépôt public."
+access = "Lecture seule depuis cette session."
+state = "Version 0.7, socle fonctionnel selon le dépôt : espaces cloisonnés, comptes avec rôles, tâches, finances avec import CSV, recommandations, exécution avec autorisations, journal d'audit, sauvegarde et restauration. 4 428 lignes de JavaScript et 32 cas de test, comptés à la main dans le cycle C-0006 (pas par l'observateur du moteur). 0 utilisateur connu, 0 vente."
+demonstrated = "Le dépôt déclare un parcours complet vérifié dans un navigateur et par ses tests. Non rejoué dans ce cycle."
+dependencies = "Node.js 22.13 ou plus, aucune dépendance, base SQLite locale."
+costs = "0 € en local. Un hébergement en ligne n'est pas chiffré ici."
+reuse = "C'est l'actif le plus proche du noyau à connexions demandé pour velyx.org : modules, clé d'API, autorisations, journal d'audit, import Stripe et envois vers trois messageries déjà écrits. À réutiliser avant d'écrire un autre noyau."
+proofs = "32 tests déclarés par le README, non rejoués. Selon le dépôt, l'import Stripe, les fournisseurs d'IA et les envois vers les messageries ne sont testés que contre des réponses simulées ; l'intégration continue n'a encore jamais tourné."
+blockers = "Selon le dépôt : aucun connecteur OAuth, pas de double authentification ni de HTTPS intégré, base non chiffrée, modules externes sans bac à sable. Pas d'offre, pas de prix en vigueur, recoupe en partie le moteur SOVEREIGN (ADR 0001 : un seul moteur)."
+next_action = "Aucune action rentable directe. Décision du propriétaire : en faire le tableau de bord du portail velyx.org, ou le geler au profit du moteur."
+
+[[asset]]
 name = "SOVEREIGN"
 title = "Le moteur : noyau, registre financier, mémoire, validations humaines"
 observed = "2026-11-21"

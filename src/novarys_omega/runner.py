@@ -65,7 +65,12 @@ _SECRETS: tuple[tuple[str, re.Pattern[str]], ...] = (
 _USER_PATH = re.compile(r"""(/(?:home|Users)/|pytest-of-)[^/\s"']+""")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 # Fichiers que `omega run` écrit lui-même : ils ne rendent pas « modifié » le dépôt qui porte le registre.
-_OWN_OUTPUTS = (":(exclude)registre/preuves.jsonl", ":(exclude)CAPACITES.md", ":(exclude)ACTIFS.md")
+_OWN_OUTPUTS = (
+    ":(exclude)registre/preuves.jsonl",
+    ":(exclude)CAPACITES.md",
+    ":(exclude)ACTIFS.md",
+    ":(exclude)site",
+)
 _STATUS = ("-c", "status.showUntrackedFiles=all", "status", "--porcelain", "--untracked-files=all")
 _RECORD_KEYS = ("claim", "claim_sha256", "status", "runs", "expected", "falsification", "scope", "subject", "output")
 

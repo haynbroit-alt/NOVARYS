@@ -3,7 +3,7 @@
 omega run [--only ID] [--tag T]      exécuter les capacités, consigner les preuves, régénérer la matrice
 omega verify [--only ID] [--tag T]   réexécuter et comparer au registre, sans rien écrire
 omega check [--base FICHIER]         registre intact, cohérent, prolongeant la base, fichiers générés à jour
-omega render                         régénérer CAPACITES.md et ACTIFS.md
+omega render                         régénérer CAPACITES.md, ACTIFS.md et site/
 
 Codes de sortie : 0 conforme ; 1 échec constaté (preuve en échec, régression, registre altéré) ; 2 entrée
 inutilisable (référentiel invalide, dépôt visé pas dans l'état épinglé, fichier illisible).
@@ -20,7 +20,7 @@ from pathlib import Path
 
 from novarys_omega import registry
 from novarys_omega.model import Charter, Claim, Status, label, load_charter
-from novarys_omega.report import assets_markdown, capabilities_markdown, load_assets, status_of
+from novarys_omega.report import assets_markdown, capabilities_markdown, load_assets, site_pages, status_of
 from novarys_omega.runner import SubjectError, inconsistencies, prove, subject_state
 
 
@@ -33,9 +33,11 @@ def _proofs(root: Path) -> Path:
 
 
 def _generated(root: Path, charter: Charter) -> dict[Path, str]:
+    assets = load_assets(root / "registre" / "actifs.toml")
     return {
         root / "CAPACITES.md": capabilities_markdown(charter, registry.read(_proofs(root))),
-        root / "ACTIFS.md": assets_markdown(load_assets(root / "registre" / "actifs.toml")),
+        root / "ACTIFS.md": assets_markdown(assets),
+        **{root / "site" / name: page for name, page in site_pages(assets).items()},
     }
 
 
@@ -130,6 +132,7 @@ def _check(args: argparse.Namespace) -> int:
 def _render(args: argparse.Namespace) -> int:
     root = args.root.resolve()
     for path, text in _generated(root, _charter(root)).items():
+        path.parent.mkdir(exist_ok=True)
         path.write_text(text, encoding="utf-8")
     return 0
 
@@ -151,7 +154,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     check.add_argument(
         "--base", type=Path, help="registre de la branche de base, que le registre courant doit prolonger"
     )
-    actions.add_parser("render", help="régénérer CAPACITES.md et ACTIFS.md")
+    actions.add_parser("render", help="régénérer CAPACITES.md, ACTIFS.md et site/")
     args = parser.parse_args(argv)
     try:
         return {"run": _run, "verify": _verify, "check": _check, "render": _render}[args.action](args)
