@@ -33,7 +33,7 @@ ASSET_FIELDS = {
     "blockers": "Blocages",
     "next_action": "Prochaine action rentable",
 }
-_ASSET_KEYS = {"name", "title", "observed", "commit", "role", *ASSET_FIELDS}
+_ASSET_KEYS = {"name", "title", "observed", "commit", "role", "short", *ASSET_FIELDS}
 # Nombre d'actifs présentés comme priorités sur l'accueil du site : les premiers du registre, déjà classé.
 PRIORITIES = 5
 
@@ -219,24 +219,113 @@ def assets_markdown(assets: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
-_SITE_STYLE = """:root{--bg:#f6f7f5;--fg:#17263a;--soft:#4a5868;--line:#c9d0d3;--card:#fff;--accent:#0b6b5d}
-@media (prefers-color-scheme:dark){:root{--bg:#10161e;--fg:#e6ebef;--soft:#a9b4be;--line:#2c3846;--card:#161e28;
---accent:#5fd0bd}}
+_SITE_STYLE = """:root{--bg:#040817;--fg:#eaf2ff;--soft:#9db4d8;--cy:#35e0ff;--gold:#ffc24a;--vio:#b06bff;--ok:#3dffa0;
+--edge:rgba(80,150,255,.45);--cell:rgba(10,20,60,.7)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:720px;margin:0 auto;padding:32px 16px 64px}
-h1{font-size:1.6rem;line-height:1.25;margin:0 0 8px;text-wrap:balance}
-h2{font-size:1rem;margin:24px 0 4px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+background:radial-gradient(900px 520px at 50% 28%,#14307a 0,transparent 70%),
+radial-gradient(700px 420px at 8% 0,#2a1466 0,transparent 70%),
+radial-gradient(700px 420px at 92% 0,#0b3a6b 0,transparent 70%),var(--bg)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;background-size:220px 220px;
+background-image:radial-gradient(1px 1px at 20px 30px,#fff,transparent),
+radial-gradient(1px 1px at 130px 80px,#9cf,transparent),radial-gradient(1.5px 1.5px at 80px 160px,#fff,transparent),
+radial-gradient(1px 1px at 190px 120px,#c9f,transparent)}
+a{color:var(--cy)}
+main{position:relative;max-width:1400px;margin:0 auto;padding:20px 16px 48px}
+main.doc{max-width:760px}
+.doc h1{font-size:1.6rem;line-height:1.25;margin:0 0 8px;text-wrap:balance}
+.doc h2{font-size:.9rem;margin:22px 0 4px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em}
 p{margin:0 0 12px;overflow-wrap:anywhere}
-a{color:var(--accent)}
-.soft{color:var(--soft);font-size:.9rem}
-.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0;
-text-decoration:none;color:inherit}
-.card strong{display:block;font-size:1.05rem;color:var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.grid .card{margin:0}
-.big{display:block;font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.soft{color:var(--soft);font-size:.88rem}
+.panel{background:linear-gradient(160deg,rgba(20,40,110,.55),rgba(8,14,44,.78));border:1px solid var(--edge);
+border-radius:18px;padding:16px;box-shadow:inset 0 0 0 1px rgba(53,224,255,.12),0 0 28px rgba(47,107,255,.35)}
+.panel h2{margin:0 0 12px;font-size:1.1rem}
+.top{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin-bottom:18px}
+.tag{margin:6px 0 0;font-weight:600;color:var(--cy);background:linear-gradient(90deg,var(--vio),var(--cy));
+-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tag.r{text-align:right}
+.brand{text-align:center}
+.brand h1{margin:0;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.1;letter-spacing:.18em;font-weight:800;
+text-shadow:0 0 24px rgba(120,180,255,.85)}
+.brand p{margin:4px 0 0;color:var(--gold);font-size:1.05rem}
+.stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1.15fr);gap:18px;align-items:start}
+.side{display:grid;gap:18px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;min-height:98px;border-radius:12px;
+text-align:center;text-decoration:none;color:var(--fg);background:var(--cell);border:1px solid var(--edge);
+overflow-wrap:anywhere;transition:box-shadow .2s,border-color .2s}
+.tile:hover,.tile:focus-visible,.pillar:hover,.pillar:focus-visible,.step:hover,.step:focus-visible{
+border-color:var(--cy);box-shadow:0 0 18px rgba(53,224,255,.55);outline:0}
+.ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-weight:800;color:#fff;
+background:linear-gradient(135deg,hsl(var(--h) 90% 60%),hsl(calc(var(--h) + 50) 90% 42%));
+box-shadow:0 0 12px hsl(var(--h) 90% 60% / .7)}
+.tile b{font-size:.9rem;line-height:1.2}
+.tile span{font-size:.74rem;color:var(--soft);line-height:1.2}
+.core{display:grid;justify-items:center;gap:0;padding-top:8px}
+.orb{position:relative;width:min(88%,340px);aspect-ratio:1;border-radius:50%;display:grid;place-content:center;
+justify-items:center;background:radial-gradient(circle at 35% 30%,#7fd4ff 0,#1b63e0 35%,#0a1e6b 65%,#050a2a 100%);
+box-shadow:0 0 60px rgba(60,140,255,.8),inset 0 0 50px rgba(255,255,255,.25)}
+.orb svg{width:46%;filter:drop-shadow(0 0 14px rgba(160,220,255,.9))}
+.orb strong{font-size:clamp(1.3rem,4vw,1.9rem);letter-spacing:.2em;text-shadow:0 0 14px #9cf}
+.ring{position:absolute;inset:-9%;border-radius:50%;border:2px solid rgba(255,194,74,.75);
+animation:spin 16s linear infinite}
+.ring.b{inset:-4%;border-color:rgba(176,107,255,.75);animation-duration:24s;animation-direction:reverse}
+.ring::after{content:"";position:absolute;top:-5px;left:50%;width:9px;height:9px;border-radius:50%;background:#fff;
+box-shadow:0 0 12px 3px var(--gold)}
+@keyframes spin{from{transform:rotateX(74deg) rotateZ(0)}to{transform:rotateX(74deg) rotateZ(360deg)}}
+.city{width:min(96%,380px);margin-top:-26px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px}
+.kpi{padding:12px;border-radius:12px;background:var(--cell);border:1px solid var(--edge)}
+.kpi b{display:block;font-size:1.45rem;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--ok)}
+.kpi b.unknown{color:var(--gold);font-size:1.05rem;line-height:1.75}
+.kpi small{display:block;color:var(--soft);font-size:.74rem;line-height:1.35;margin-top:4px}
+.prio{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.prio a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--fg)}
+.prio a::before{content:"";flex:none;width:14px;height:14px;border-radius:50%;border:2px solid var(--soft);
+transform:translateY(2px)}
+.prio b{color:var(--cy)}
+.pillars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:18px}
+.pillar{display:block;text-align:center;text-decoration:none;color:var(--fg)}
+.pillar em{display:block;font-style:normal;color:var(--gold);font-weight:600;margin-bottom:6px}
+.pillar b{display:block;font-size:1.05rem}
+.pillar span{color:var(--soft);font-size:.82rem}
+.cycle{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.step{flex:1 1 150px;padding:10px 12px;border-radius:999px;border:1px solid var(--edge);background:var(--cell);
+text-decoration:none;color:var(--fg);display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}
+.step i{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;
+font-weight:800;border:2px solid var(--soft);color:var(--soft)}
+.step.fait i{border-color:var(--ok);color:var(--ok);box-shadow:0 0 10px rgba(61,255,160,.6)}
+.step.encours i{border-color:var(--gold);color:var(--gold)}
+.step small{color:var(--soft);font-size:.72rem;line-height:1.3}
+.motto{text-align:center;margin:26px 0 6px;font-size:1.1rem}
+.motto b{color:var(--gold);font-weight:600}
+.foot{text-align:center}
+@media (max-width:1000px){.stage{grid-template-columns:1fr}.core{order:-1}
+.top{grid-template-columns:1fr;text-align:center}
+.tag.r{text-align:center}.brand{order:-1}.pillars{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:430px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.pillars{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;transform:rotateX(74deg)}.tile{transition:none}}
 """
+_LOGO = (
+    '<svg viewBox="0 0 100 80" role="img" aria-label="Emblème VELYX"><defs><linearGradient id="v" x1="0" y1="0" '
+    'x2="1" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#3f8cff"/></linearGradient>'
+    '</defs><path fill="url(#v)" d="M4 4h24l22 44 22-44h24L50 78z"/></svg>'
+)
+_CITY = (
+    '<svg class="city" viewBox="0 0 380 150" aria-hidden="true"><defs><linearGradient id="c" x1="0" y1="0" x2="0" '
+    'y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#3a59c9"/></linearGradient></defs>'
+    '<path d="M40 120a150 110 0 0 1 300 0" fill="rgba(60,120,255,.12)" stroke="rgba(120,190,255,.7)"/>'
+    '<g fill="url(#c)"><rect x="92" y="78" width="14" height="42"/><rect x="110" y="62" width="16" height="58"/>'
+    '<rect x="130" y="84" width="12" height="36"/><rect x="146" y="50" width="18" height="70"/>'
+    '<rect x="168" y="70" width="14" height="50"/><rect x="186" y="34" width="16" height="86"/>'
+    '<rect x="206" y="58" width="16" height="62"/><rect x="226" y="76" width="12" height="44"/>'
+    '<rect x="242" y="64" width="16" height="56"/><rect x="262" y="88" width="14" height="32"/></g>'
+    '<ellipse cx="190" cy="124" rx="170" ry="14" fill="none" stroke="#35e0ff" stroke-width="2"/>'
+    '<ellipse cx="190" cy="136" rx="130" ry="10" fill="none" stroke="rgba(176,107,255,.8)" stroke-width="2"/></svg>'
+)
+STEP_STATES = {"fait": ("fait", "✓"), "en cours": ("encours", "…"), "à faire": ("afaire", "")}
+_REPO = "https://github.com/haynbroit-alt/NOVARYS/blob/main"
 
 
 def asset_slug(name: str) -> str:
@@ -245,75 +334,130 @@ def asset_slug(name: str) -> str:
     return "".join(c for c in name.lower() if c.isalnum())
 
 
-def _site_page(title: str, body: list[str]) -> str:
+def _site_page(title: str, body: list[str], kind: str = "doc") -> str:
     head = (
         '<!doctype html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-        f"<title>{escape(title)}</title>\n<style>\n{_SITE_STYLE}</style>\n</head>\n<body>\n<main>"
+        f'<title>{escape(title)}</title>\n<style>\n{_SITE_STYLE}</style>\n</head>\n<body>\n<main class="{kind}">'
     )
     return "\n".join([head, *body, "</main>\n</body>\n</html>\n"])
+
+
+def _board(path: Path, table: str, keys: set[str]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for index, row in enumerate(tomllib.loads(path.read_text(encoding="utf-8")).get(table, []), start=1):
+        if set(row) != keys or not all(isinstance(v, str) and v.strip() for v in row.values()):
+            wanted = ", ".join(f"« {key} »" for key in sorted(keys))
+            raise ValueError(f"{table} n°{index} : il faut exactement {wanted}, non vides")
+        rows.append({key: value.strip() for key, value in row.items()})
+    return rows
 
 
 def load_measures(path: Path) -> list[dict[str, str]]:
     """Lit les mesures du tableau de bord public. Une mesure sans source n'est pas une mesure : elle est refusée."""
 
-    measures: list[dict[str, str]] = []
-    for index, table in enumerate(tomllib.loads(path.read_text(encoding="utf-8")).get("measure", []), start=1):
-        if set(table) != {"label", "value", "source"} or not all(
-            isinstance(v, str) and v.strip() for v in table.values()
-        ):
-            raise ValueError(f"mesure n°{index} : il faut exactement « label », « value » et « source », non vides")
-        measures.append({key: value.strip() for key, value in table.items()})
-    return measures
+    return _board(path, "measure", {"label", "value", "source"})
 
 
-def site_pages(assets: list[dict[str, str]], measures: list[dict[str, str]]) -> dict[str, str]:
+def load_steps(path: Path) -> list[dict[str, str]]:
+    """Lit les étapes du cycle : un état parmi trois, une source, et un lien qui mène à la preuve de cet état."""
+
+    steps = _board(path, "step", {"label", "state", "source", "link"})
+    for step in steps:
+        if step["state"] not in STEP_STATES:
+            raise ValueError(f"étape « {step['label']} » : état inconnu (attendu : {', '.join(STEP_STATES)})")
+        if not step["link"].startswith(("https://", "#")):
+            raise ValueError(f"étape « {step['label']} » : le lien doit commencer par https:// ou par #")
+    return steps
+
+
+def _text(value: str) -> str:
+    return escape(" ".join(value.split()))
+
+
+def _home(assets: list[dict[str, str]], measures: list[dict[str, str]], steps: list[dict[str, str]]) -> list[str]:
+    """Accueil : les projets à gauche, le cœur au centre, l'économie et les priorités à droite, piliers et cycle."""
+
+    def link(asset: dict[str, str]) -> str:
+        return f"{asset_slug(asset['name'])}.html"
+
+    tiles = [
+        f'<a class="tile" href="{link(a)}" style="--h:{n * 47 % 360}"><span class="ico">{_text(a["name"][:1].upper())}'
+        f"</span><b>{_text(a['name'])}</b><span>{_text(a.get('short', a['title']))}</span></a>"
+        for n, a in enumerate(assets)
+    ]
+    kpis = [
+        f'<div class="kpi"><span>{_text(m["label"])}</span><b{' class="unknown"' if m["value"] == "INCONNU" else ""}>'
+        f"{_text(m['value'])}</b><small>{_text(m['source'])}</small></div>"
+        for m in measures
+    ]
+    priorities = [
+        f'<li><a href="{link(a)}"><span><b>{_text(a["name"])}</b> — {_text(a["title"])}</span></a></li>'
+        for a in assets[:PRIORITIES]
+    ]
+    pillars = [
+        f'<a class="panel pillar" href="{link(a)}"><em>{_text(a["role"].split(":")[0])}</em><b>{_text(a["name"])}</b>'
+        f"<span>{_text(a['role'].split(':', 1)[-1].split('.')[0])}</span></a>"
+        for a in assets
+        if "role" in a
+    ]
+    pillars += [
+        '<a class="panel pillar" href="#economie"><em>Des projets qui réussissent</em><b>Des idées aux revenus</b>'
+        "<span>Les chiffres réels, avec leur source</span></a>",
+        f'<a class="panel pillar" href="{_REPO}/DECISIONS.md"><em>Une autonomie progressive</em><b>Décisions</b>'
+        "<span>Ce qui attend encore le propriétaire</span></a>",
+    ]
+    cycle = [
+        f'<a class="step {STEP_STATES[s["state"]][0]}" href="{escape(s["link"])}"><i>{STEP_STATES[s["state"]][1]}</i>'
+        f"<b>{_text(s['label'])}</b><small>{_text(s['state'])} · {_text(s['source'])}</small></a>"
+        for s in steps
+    ]
+    return [
+        '<header class="top"><p class="tag">Créer • Produire • Vendre • Innover</p><div class="brand"><h1>VELYX</h1>'
+        f"<p>Un écosystème. {len(assets)} projets. Une seule vision.</p></div>"
+        '<p class="tag r">Construire aujourd\'hui la liberté de demain</p></header>',
+        '<div class="stage">',
+        f'<section class="panel" id="projets"><h2>Nos {len(assets)} projets</h2><div class="tiles">',
+        *tiles,
+        "</div></section>",
+        f'<div class="core"><div class="orb"><span class="ring"></span><span class="ring b"></span>{_LOGO}'
+        f"<strong>VELYX</strong></div>{_CITY}</div>",
+        '<div class="side"><section class="panel" id="economie"><h2>Tableau de bord : chiffres réels</h2>'
+        '<div class="kpis">',
+        *kpis,
+        '</div><p class="soft" style="margin:10px 0 0">Un chiffre sans mesure s\'écrit INCONNU.</p></section>',
+        '<section class="panel" id="priorites"><h2>Priorités immédiates</h2><ol class="prio">',
+        *priorities,
+        "</ol></section></div>",
+        "</div>",
+        '<nav class="pillars" aria-label="Piliers">',
+        *pillars,
+        "</nav>",
+        '<nav class="cycle" aria-label="Cycle opérationnel">',
+        *cycle,
+        "</nav>",
+        '<p class="motto">VELYX : plus qu\'un portail, <b>un moteur de réussite</b> à mériter.</p>',
+        '<p class="soft foot">Page générée depuis le registre public. Aucun chiffre fictif.</p>',
+    ]
+
+
+def site_pages(
+    assets: list[dict[str, str]], measures: list[dict[str, str]], steps: list[dict[str, str]]
+) -> dict[str, str]:
     """Portail statique : une page d'accueil et une page par actif, tirées du même registre que ACTIFS.md."""
-
-    def text(value: str) -> str:
-        return escape(" ".join(value.split()))
 
     slugs = [asset_slug(asset["name"]) for asset in assets]
     if "index" in slugs or "" in slugs or len(set(slugs)) != len(slugs):
         raise ValueError("deux actifs donneraient la même page du site, ou une page sans nom")
     note = '<p class="soft">Page générée depuis le registre public des actifs. Aucune promesse de résultat.</p>'
-    index = [
-        "<h1>VELYX</h1>",
-        f"<p>{len(assets)} projets, un seul registre. Chaque projet a sa page : état réel, preuves, blocages, "
-        "prochaine action.</p>",
-        "<h2>Chiffres réels</h2>",
-        '<div class="grid">',
-        *(
-            f'<div class="card"><span class="big">{text(m["value"])}</span>{text(m["label"])}'
-            f'<br><span class="soft">{text(m["source"])}</span></div>'
-            for m in measures
-        ),
-        "</div>",
-        "<p class=\"soft\">Un chiffre sans mesure s'écrit INCONNU. Aucun n'est une estimation.</p>",
-    ]
-    roles = [a for a in assets if "role" in a]
-    if roles:
-        index += ["<h2>Le noyau</h2>", '<div class="grid">']
-        index += [
-            f'<a class="card" href="{asset_slug(a["name"])}.html"><strong>{text(a["name"])}</strong>'
-            f"{text(a['role'])}</a>"
-            for a in roles
-        ]
-        index.append("</div>")
     pages: dict[str, str] = {}
-    for position, (asset, slug) in enumerate(zip(assets, slugs, strict=True)):
-        if position in (0, PRIORITIES):
-            index.append(f"<h2>{'Priorités immédiates' if position == 0 else 'Les autres projets'}</h2>")
-        index.append(
-            f'<a class="card" href="{slug}.html"><strong>{text(asset["name"])}</strong>{text(asset["title"])}'
-            f'<br><span class="soft">Prochaine action : {text(asset["next_action"])}</span></a>'
-        )
-        body = ['<p><a href="index.html">← Tous les projets</a></p>', f"<h1>{text(asset['title'])}</h1>"]
-        body.append(f'<p class="soft">{text(asset["name"])} · observé le {text(asset["observed"])}</p>')
+    for asset, slug in zip(assets, slugs, strict=True):
+        body = ['<p><a href="index.html">← Tous les projets</a></p>', f"<h1>{_text(asset['title'])}</h1>"]
+        body.append(f'<p class="soft">{_text(asset["name"])} · observé le {_text(asset["observed"])}</p>')
         if "role" in asset:
-            body += ["<h2>Rôle dans le noyau</h2>", f"<p>{text(asset['role'])}</p>"]
+            body += ["<h2>Rôle dans le noyau</h2>", f"<p>{_text(asset['role'])}</p>"]
         for key, title in ASSET_FIELDS.items():
-            body += [f"<h2>{escape(title)}</h2>", f"<p>{text(asset[key])}</p>"]
+            body += [f"<h2>{escape(title)}</h2>", f"<p>{_text(asset[key])}</p>"]
         pages[f"{slug}.html"] = _site_page(f"{asset['name']} — VELYX", [*body, note])
-    pages["index.html"] = _site_page("VELYX — les projets", [*index, note])
+    pages["index.html"] = _site_page("VELYX — un écosystème, une seule vision", _home(assets, measures, steps), "home")
     return pages

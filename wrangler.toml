@@ -1,0 +1,7 @@
+# Cloudflare Workers : le portail est servi comme fichiers statiques (dossier site/), sans code exécuté.
+# Le nom doit rester celui du Worker relié au dépôt. Demandé par le propriétaire le 21/11/2026 (« déploie-la »).
+name = "novarys"
+compatibility_date = "2026-01-01"
+
+[assets]
+directory = "./site"

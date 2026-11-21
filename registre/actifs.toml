@@ -8,6 +8,7 @@
 
 [[asset]]
 name = "Alll"
+short = "Livret maison"
 title = "L'histoire de votre maison, livret personnalisé à 29 €"
 observed = "2026-11-21"
 commit = "b998e46909ca0f171612dad070494ae6104204aa"
@@ -24,6 +25,7 @@ next_action = "Décision datée : pour vendre avant le 20/12/2026 (critère d'ar
 
 [[asset]]
 name = "Velyx-prospection-"
+short = "Prospection"
 title = "VELYX, fichiers de prospection fondés sur des signaux publics"
 observed = "2026-11-21"
 commit = "08edccb3eb2d344d6d9d52d3ea731e167bbd0c66"
@@ -40,6 +42,7 @@ next_action = "Propriétaire : déposer le statut (gratuit, 20 à 30 minutes sel
 
 [[asset]]
 name = "Ref"
+short = "OMNISEARCH"
 title = "NOVARYS OMNISEARCH, conformité des droits face aux IA"
 observed = "2026-11-21"
 commit = "7753dd034a4b8c15b96a3727b0b04969917dc4c0"
@@ -56,6 +59,7 @@ next_action = "Relire docs/pilote/MESSAGES.md et envoyer une première demande d
 
 [[asset]]
 name = "Paie-juste"
+short = "Paie"
 title = "Paie Juste, vérifier sa paie hors ligne"
 observed = "2026-11-21"
 commit = "574bd8b08ef1fa8d5197f49bfc5594e1f8651263"
@@ -72,6 +76,7 @@ next_action = "Mesurer l'usage avant toute décision (compteur sans cookie). San
 
 [[asset]]
 name = "Clip-preuve"
+short = "Preuve vidéo"
 title = "Clip-preuve, un clip vertical et sa carte de preuve"
 observed = "2026-11-21"
 commit = "541c1dc367a38a1b3c971814a66b6cea4d4dbe23"
@@ -88,6 +93,7 @@ next_action = "Aucune action rentable sans test de demande. Piste à 0 € : pro
 
 [[asset]]
 name = "Jeun"
+short = "MULTIVERSE"
 title = "MULTIVERSE, plusieurs VOD d'un même événement sur une horloge commune"
 observed = "2026-11-21"
 commit = "e427e93145844896f709c9d8a84b6812e2273428"
@@ -104,6 +110,7 @@ next_action = "Activer le compteur, puis lancer le test de 7 jours (seuil du dé
 
 [[asset]]
 name = "Toon-o-Matic"
+short = "Animation"
 title = "Toon-o-Matic, usine de web-série animée"
 observed = "2026-11-21"
 commit = "1aa8c329bff0b60e0eea40ab3f0aea292b86368c"
@@ -120,6 +127,7 @@ next_action = "Aucune à 0 € au-delà du mode simulé. À reprendre quand une 
 
 [[asset]]
 name = "Hive"
+short = "Agents"
 title = "HIVE, colonie d'agents sous contrôle humain"
 observed = "2026-11-21"
 commit = "8b552da54e4a0f98b3695bafc3d845b8cb77d7ac"
@@ -136,6 +144,7 @@ next_action = "Aucune action rentable directe. Décision à prendre : en faire l
 
 [[asset]]
 name = "Logiciel-"
+short = "OMNIA"
 role = "Gestion : orchestre, automatise, optimise. Vision du propriétaire du 21/11/2026 ; ses connecteurs ne sont testés que contre des réponses simulées."
 title = "OMNIA, un logiciel qui transforme les besoins d'une activité en constats, décisions et actions"
 observed = "2026-11-21"
@@ -153,6 +162,7 @@ next_action = "Aucune action rentable directe. Décision du propriétaire : en f
 
 [[asset]]
 name = "SOVEREIGN"
+short = "Noyau"
 role = "Intelligence centrale : coordonne, décide, sécurise. Vision du propriétaire du 21/11/2026 ; aucune donnée d'entreprise n'y est encore chargée."
 title = "Le moteur : noyau, registre financier, mémoire, validations humaines"
 observed = "2026-11-21"
@@ -170,6 +180,7 @@ next_action = "Décider de la visibilité du dépôt pour relancer le cycle quot
 
 [[asset]]
 name = "NOVARYS"
+short = "Registre"
 role = "Mémoire durable : trace, prouve, organise. Vision du propriétaire du 21/11/2026."
 title = "Ce dépôt : charte, protocole de preuves Ω, registres"
 observed = "2026-11-21"
@@ -186,6 +197,7 @@ next_action = "Faire de la CI le second acteur du registre ; décider de la visi
 
 [[asset]]
 name = "Tr"
+short = "Travail commun"
 title = "Page de travail commune de GALILÉE, CORTEX et LAVOISIER"
 observed = "2026-11-21"
 commit = "67a043cfd198fbd22d0dfe629d6905a4a2470924"
@@ -202,6 +214,7 @@ next_action = "Aucune action rentable identifiée. Garder Tr comme référence e
 
 [[asset]]
 name = "1"
+short = "CORTEX"
 title = "CORTEX, boucle cognitive qui pilote une activité inconnue"
 observed = "2026-11-21"
 commit = "8825007b1c0692f94e949262025efc123551bcae"
@@ -218,6 +231,7 @@ next_action = "Aucune. Voir Tr."
 
 [[asset]]
 name = "All"
+short = "Galilée"
 title = "Galilée, agent scientifique qui retrouve une loi cachée"
 observed = "2026-11-21"
 commit = "58e25ca8163a6bd0606fc9cb2e7aa1e9bb88f4ec"
@@ -234,6 +248,7 @@ next_action = "Aucune. Voir Tr."
 
 [[asset]]
 name = "A"
+short = "LAVOISIER"
 title = "LAVOISIER, reconstruire les comptes d'une entreprise opaque"
 observed = "2026-11-21"
 commit = "38b957822c7d0ecd0373ee3167b5c7809ef5c3b9"
@@ -250,6 +265,7 @@ next_action = "Aucune. Voir Tr."
 
 [[asset]]
 name = "MONDO"
+short = "Stratégie"
 title = "MONDO, document de stratégie"
 observed = "2026-11-21"
 commit = "f1c055390bc6ade70131cf9e0dafaa6d8e83938d"
@@ -266,6 +282,7 @@ next_action = "Aucune action rentable identifiée."
 
 [[asset]]
 name = "Artiste-"
+short = "Musique"
 title = "Document fondateur d'un projet musical"
 observed = "2026-11-21"
 commit = "79ea5154f1dd799d1697d24d378980c7f496ef8f"

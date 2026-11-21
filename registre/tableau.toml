@@ -20,3 +20,52 @@ source = "Aucun compteur de visites n'est activé."
 label = "Satisfaction"
 value = "INCONNU"
 source = "Aucun client à interroger."
+
+[[measure]]
+label = "Trésorerie"
+value = "INCONNU"
+source = "Non écrite dans ce dépôt public."
+
+# Cycle opérationnel. État : « fait », « en cours » ou « à faire ». Le lien mène à ce qui le montre.
+
+[[step]]
+label = "Auditer"
+state = "fait"
+source = "17 projets au registre des actifs."
+link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/ACTIFS.md"
+
+[[step]]
+label = "Terminer"
+state = "à faire"
+source = "Aucune offre n'est en vente."
+link = "#priorites"
+
+[[step]]
+label = "Tester"
+state = "en cours"
+source = "Matrice des capacités prouvées."
+link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/CAPACITES.md"
+
+[[step]]
+label = "Sécuriser"
+state = "en cours"
+source = "Registre chaîné ; domaine non rattaché."
+link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/journal/C-0006.md"
+
+[[step]]
+label = "Commercialiser"
+state = "à faire"
+source = "Aucun envoi commercial."
+link = "https://github.com/haynbroit-alt/NOVARYS/blob/main/DECISIONS.md"
+
+[[step]]
+label = "Mesurer"
+state = "à faire"
+source = "Aucun compteur de visites."
+link = "#economie"
+
+[[step]]
+label = "Améliorer"
+state = "à faire"
+source = "Rien à améliorer sans mesure."
+link = "https://github.com/haynbroit-alt/NOVARYS/tree/main/journal"
