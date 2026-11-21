@@ -136,6 +136,7 @@ next_action = "Aucune action rentable directe. Décision à prendre : en faire l
 
 [[asset]]
 name = "Logiciel-"
+role = "Gestion : orchestre, automatise, optimise. Vision du propriétaire du 21/11/2026 ; ses connecteurs ne sont testés que contre des réponses simulées."
 title = "OMNIA, un logiciel qui transforme les besoins d'une activité en constats, décisions et actions"
 observed = "2026-11-21"
 commit = "48ab7b837bc592053e900b4af030f7a7b8fcb66a"
@@ -152,6 +153,7 @@ next_action = "Aucune action rentable directe. Décision du propriétaire : en f
 
 [[asset]]
 name = "SOVEREIGN"
+role = "Intelligence centrale : coordonne, décide, sécurise. Vision du propriétaire du 21/11/2026 ; aucune donnée d'entreprise n'y est encore chargée."
 title = "Le moteur : noyau, registre financier, mémoire, validations humaines"
 observed = "2026-11-21"
 commit = "7cddfbd53ae69601b47219f51ea9c0e850fee392"
@@ -168,6 +170,7 @@ next_action = "Décider de la visibilité du dépôt pour relancer le cycle quot
 
 [[asset]]
 name = "NOVARYS"
+role = "Mémoire durable : trace, prouve, organise. Vision du propriétaire du 21/11/2026."
 title = "Ce dépôt : charte, protocole de preuves Ω, registres"
 observed = "2026-11-21"
 location = "github.com/haynbroit-alt/NOVARYS, dépôt public."

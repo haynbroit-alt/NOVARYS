@@ -20,7 +20,14 @@ from pathlib import Path
 
 from novarys_omega import registry
 from novarys_omega.model import Charter, Claim, Status, label, load_charter
-from novarys_omega.report import assets_markdown, capabilities_markdown, load_assets, site_pages, status_of
+from novarys_omega.report import (
+    assets_markdown,
+    capabilities_markdown,
+    load_assets,
+    load_measures,
+    site_pages,
+    status_of,
+)
 from novarys_omega.runner import SubjectError, inconsistencies, prove, subject_state
 
 
@@ -34,10 +41,11 @@ def _proofs(root: Path) -> Path:
 
 def _generated(root: Path, charter: Charter) -> dict[Path, str]:
     assets = load_assets(root / "registre" / "actifs.toml")
+    measures = load_measures(root / "registre" / "tableau.toml")
     return {
         root / "CAPACITES.md": capabilities_markdown(charter, registry.read(_proofs(root))),
         root / "ACTIFS.md": assets_markdown(assets),
-        **{root / "site" / name: page for name, page in site_pages(assets).items()},
+        **{root / "site" / name: page for name, page in site_pages(assets, measures).items()},
     }
 
 

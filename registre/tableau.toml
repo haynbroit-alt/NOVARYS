@@ -1,0 +1,22 @@
+# Tableau de bord public du portail. Chaque mesure porte sa source ; ce qui n'est pas mesuré s'écrit INCONNU.
+# Public : aucun chiffre privé (trésorerie, audience des comptes) n'est écrit ici.
+
+[[measure]]
+label = "Encaissé"
+value = "0 €"
+source = "Registre de VELYX et moteur, relevés le 21/11/2026."
+
+[[measure]]
+label = "Commandes"
+value = "0"
+source = "Aucune offre n'est en vente au 21/11/2026."
+
+[[measure]]
+label = "Visiteurs"
+value = "INCONNU"
+source = "Aucun compteur de visites n'est activé."
+
+[[measure]]
+label = "Satisfaction"
+value = "INCONNU"
+source = "Aucun client à interroger."
