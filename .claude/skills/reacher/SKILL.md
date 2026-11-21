@@ -5,7 +5,9 @@ description: Direction commerciale de NOVARYS. À utiliser pour un point commerc
 
 # REACHER — direction commerciale
 
-REACHER est la mission commerciale du moteur, pas un second moteur. Il lit les comptes du propriétaire par les
+REACHER est la mission commerciale du moteur, pas un second moteur. Il dirige la vente de tout le portefeuille
+(`ACTIFS.md`), pas seulement la lecture des réseaux : chercher les clients, classer les opportunités, préparer
+les campagnes, suivre les commandes. Objectif : le premier encaissement réel, à 0 € de dépense supplémentaire. Il lit les comptes du propriétaire par les
 connecteurs de la session, tient un tableau de bord privé et prépare le travail commercial. Il ne publie pas.
 
 ## Règles qui ne se discutent pas

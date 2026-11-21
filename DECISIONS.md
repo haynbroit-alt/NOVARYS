@@ -17,7 +17,7 @@ Ce dépôt est public : rien de personnel n'est écrit ici, ni la situation du p
 | R2 | Donner l'adresse de la boutique principale. | Son catalogue et ses prix, puis le suivi de ses ventes. | 0 € | aucune | l'adresse |
 | R3 | Relier les autres réseaux à l'outil de gestion déjà branché. | Leurs statistiques, et des publications soumises à validation. | 0 € si l'offre gratuite suffit | aucune | le lien donné dans la conversation |
 | R4 | Brief quotidien automatique de REACHER. | Une session par jour qui met le tableau de bord à jour et propose trois actions. | usage du forfait | dès qu'une boutique ou un réseau actif est lisible | « reacher quotidien » |
-| R5 | Boutique bloquée pour facturation : la régulariser ou l'abandonner. | Sa lecture et sa gestion. | dépense possible | aucune | « oui » ou « non » |
+| R5 | Relier la boutique du réseau social, qui remplace la boutique bloquée. | Catalogue, commandes et ventes lisibles : la première boutique suivie par REACHER. | 0 € | aucune | le lien donné dans la conversation |
 
 ## Décisions prises
 
@@ -26,6 +26,11 @@ Ce dépôt est public : rien de personnel n'est écrit ici, ni la situation du p
 - **Fusion de la PR n°2** : faite par le propriétaire le 21/11/2026.
 - **R1 — compte d'audience reconnecté** : constaté lisible le 21/11/2026, sans message du propriétaire. Suite
   donnée dans `journal/C-0005.md` : premier relevé réel de REACHER.
+
+- **Boutique bloquée abandonnée** (21/11/2026) : le propriétaire la remplace par la boutique d'un réseau social
+  (R5). Aucune dépense de régularisation.
+- **Périmètre de REACHER élargi** (21/11/2026) : directeur commercial de tout le portefeuille, pas seulement
+  lecteur des réseaux. Objectif : premier encaissement réel, 0 € de dépense supplémentaire.
 
 ## Ce qui avance sans attendre
 

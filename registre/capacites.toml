@@ -158,7 +158,7 @@ tags = ["scenario-4"]
 id = "reacher-lecture-comptes"
 domain = "BUSINESS"
 capability = "REACHER : lire les performances et les ventes des comptes commerciaux du propriétaire"
-limits = "Non démontré par une commande. Au 21/11/2026 (cycle C-0005), un des sept comptes sondés est lisible, par un connecteur de la session que omega ne peut pas rejouer : son audience est relevée, aucune vente. Les six autres : cinq non reliés, une boutique bloquée. Le détail est dans le tableau de bord privé."
+limits = "Non démontré par une commande. Au 21/11/2026 (cycle C-0005), un des sept comptes sondés est lisible, par un connecteur de la session que omega ne peut pas rejouer : son audience est relevée, aucune vente. Les six autres ne sont pas reliés ; la boutique bloquée est abandonnée, remplacée par celle d'un réseau social. Le détail est dans le tableau de bord privé."
 
 [[claim]]
 id = "reacher-brief-quotidien"
