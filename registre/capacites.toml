@@ -184,6 +184,12 @@ domain = "BUSINESS"
 capability = "Portail velyx.org en ligne : une page par projet, servie depuis le registre des actifs"
 limits = "Non démontré. Les pages sont générées dans site/ par omega render et contrôlées par omega check, mais rien n'est en ligne : au 21/11/2026 le domaine répond « site introuvable », et sa mise en service est une décision du propriétaire (DECISIONS.md, D9). Le portail ne fait que montrer le registre : ni connexion de comptes, ni paiement, ni automatisation."
 
+[[claim]]
+id = "centre-de-connexions"
+domain = "BUSINESS"
+capability = "Centre de connexions : relier, autoriser, surveiller et déconnecter les services externes depuis VELYX"
+limits = "Non démontré par une commande. Ce qui existe au 21/11/2026 : un registre (registre/connexions.toml) et sa page, dont chaque état vient d'un essai en lecture fait par l'agent avec les connecteurs du compte du propriétaire, que omega ne peut pas rejouer. Ce qui n'existe pas : un serveur VELYX qui détient ses propres autorisations OAuth, reçoit des webhooks, synchronise seul et révoque une liaison. Connecter et déconnecter se font dans les réglages du compte, pas dans VELYX."
+
 # -------------------------------------------------------------------------------------------- AGENTS
 
 [[claim]]

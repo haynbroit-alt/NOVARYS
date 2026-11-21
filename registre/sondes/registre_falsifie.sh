@@ -33,6 +33,7 @@ next_action = "aucune"
 TOML
 registre="$racine/registre/preuves.jsonl"
 : > "$racine/registre/tableau.toml"
+: > "$racine/registre/connexions.toml"
 omega() { uv run --quiet --project "$OMEGA_ROOT" omega --root "$racine" "$@"; }
 refuse() {
   if omega check "$@" > "$OMEGA_TMP/verdict.txt" 2>&1; then
