@@ -25,6 +25,7 @@ from novarys_omega.report import (
     capabilities_markdown,
     load_assets,
     load_measures,
+    load_steps,
     site_pages,
     status_of,
 )
@@ -41,11 +42,14 @@ def _proofs(root: Path) -> Path:
 
 def _generated(root: Path, charter: Charter) -> dict[Path, str]:
     assets = load_assets(root / "registre" / "actifs.toml")
-    measures = load_measures(root / "registre" / "tableau.toml")
+    board = root / "registre" / "tableau.toml"
     return {
         root / "CAPACITES.md": capabilities_markdown(charter, registry.read(_proofs(root))),
         root / "ACTIFS.md": assets_markdown(assets),
-        **{root / "site" / name: page for name, page in site_pages(assets, measures).items()},
+        **{
+            root / "site" / name: page
+            for name, page in site_pages(assets, load_measures(board), load_steps(board)).items()
+        },
     }
 
 

@@ -101,7 +101,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
-| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | PROUVÉ | TESTÉ | 2026-11-21 · local · ce dépôt@ff92616f · 2 exécution(s) · attaque résistée · n°27 | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
+| L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris (`outil-de-preuve`) | PROUVÉ | TESTÉ | 2026-11-21 · local · ce dépôt@97bccb00 · 2 exécution(s) · attaque résistée · n°28 | L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel. |
 | Une capacité prouvée est reproduite par un second acteur, qui l'écrit au registre (`reproduction-par-un-tiers`) | — | ABSENT | non construite | Non construite. La CI rejoue les preuves étiquetées « ci » à chaque PR (`omega verify`) mais n'écrit pas au registre, et le nom d'acteur consigné n'est qu'une déclaration : l'outil n'attribue donc jamais le niveau VALIDÉ. |
 
 ## SOVEREIGN
