@@ -1,0 +1,287 @@
+# Référentiel des capacités de NOVARYS Ω.
+#
+# Chaque entrée est une fonction exigée par le cahier des charges (docs/CAHIER_DES_CHARGES.md).
+# - Avec « command » : la fonction est revendiquée, `omega run` l'exécute, l'attaque et consigne la preuve.
+# - Sans « command » : la fonction n'est pas construite. Elle reste listée pour apparaître ABSENTE.
+# Une commande de preuve est du code : ce fichier se relit comme du code avant fusion.
+#
+# kind = "reel" : preuve sur données et environnement réels. kind = "test" : données de test.
+# tags : « ci » = rejouée par la CI à chaque PR ; « scenario-N » = scénario de validation n° N (section 14).
+
+[subjects.moteur]
+repo = "haynbroit-alt/SOVEREIGN"
+commit = "62ecac3ada8b109baed791c2bce6913369c43874"
+path = "../SOVEREIGN"
+
+# ---------------------------------------------------------------------------------------------- CORE
+
+[[claim]]
+id = "noyau-suite-verifiee"
+domain = "CORE"
+capability = "Le noyau du moteur passe ses contrôles : lint, format, types et suite de tests"
+subject = "moteur"
+command = '''uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy && uv run pytest -o addopts="" -q'''
+output_regex = '^\d+ passed'
+scope = "Moteur SOVEREIGN au commit épinglé, dépendances verrouillées (uv.lock)."
+limits = "Une suite verte prouve ce que la suite teste, pas l'absence de défaut : l'attaque par REPLACE de `registre-ajout-seul` est passée au travers de ses 291 tests."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Mutation : dans une copie du moteur, le plafond de dépense passe de 10 % à 90 %. Une suite qui protège la règle doit échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_plafond.sh"'
+exit_code = 1
+output_regex = '^\d+ failed'
+
+[[claim]]
+id = "cli-etat-systeme"
+domain = "CORE"
+capability = "La ligne de commande du moteur rend l'état du système sur un espace neuf"
+subject = "moteur"
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign status'
+output_regex = 'Système opérationnel'
+scope = "Commande `sovereign status` sur un dossier de données vide."
+limits = "Espace vide : aucune donnée d'entreprise. L'API REST et le serveur MCP ne sont couverts que par les tests du moteur ; l'interface web exigée par le cahier des charges n'existe pas."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Base de données corrompue : le moteur ne doit pas se déclarer opérationnel."
+command = '''mkdir -p "$OMEGA_TMP/home" && echo "ceci n'est pas une base" > "$OMEGA_TMP/home/sovereign.db" && SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign status'''
+exit_code = 1
+output_regex = 'file is not a database'
+
+[[claim]]
+id = "interface-web"
+domain = "CORE"
+capability = "Interface web de pilotage"
+limits = "Non construite. Interfaces existantes du moteur : CLI, API REST, MCP."
+
+# -------------------------------------------------------------------------------------- INTELLIGENCE
+
+[[claim]]
+id = "directeur-boucle-demo"
+domain = "INTELLIGENCE"
+capability = "La boucle du directeur (observer, confronter, prioriser, décider, simuler) s'exécute de bout en bout"
+subject = "moteur"
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign init --demo > /dev/null && uv run sovereign director "Que dois-je décider cette semaine ?" --deep --dry-run'''
+output_regex = 'Skill\(s\) mobilisée\(s\)'
+scope = "Jeu de données de démonstration fourni par le moteur, mode à blanc, sans appel à un modèle de langage."
+limits = "Données de démonstration : la qualité des décisions sur une activité réelle n'est pas mesurée. Aucune donnée d'entreprise n'a encore été chargée dans le moteur."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Le mode à blanc ne doit rien exécuter : mêmes nombres de dépenses, validations, tâches, décisions et écritures avant et après."
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign init --demo > /dev/null
+compter() { python3 -c "import sqlite3; c = sqlite3.connect('$SOVEREIGN_HOME/sovereign.db'); print([c.execute(f'select count(*) from {t}').fetchone()[0] for t in ('expenses', 'approvals', 'tasks', 'decisions', 'ledger')])"; }
+avant=$(compter)
+uv run sovereign director "Faut-il dépenser 5000 € en publicité ?" --deep --dry-run > /dev/null
+apres=$(compter)
+echo "avant $avant ; après $apres"
+[ "$avant" = "$apres" ] && echo "mode à blanc : aucune dépense, validation, tâche ni décision créée"'''
+output_regex = 'aucune dépense, validation, tâche ni décision créée$'
+
+# ----------------------------------------------------------------------------------------- DISCOVERY
+
+[[claim]]
+id = "observation-depots-reels"
+domain = "DISCOVERY"
+capability = "Observer en lecture seule les dépôts réels du compte et en tirer des faits mesurés"
+kind = "reel"
+subject = "moteur"
+command = 'bash "$OMEGA_ROOT/registre/sondes/observer_depots.sh"'
+output_regex = '^depots=16 secrets=0 '
+scope = "Les 16 dépôts publics listés dans registre/depots.txt, clonés à leur dernier commit, observés par `sovereign ecosystem scan`."
+limits = "Mesure la forme (taille, tests, CI, dépendances, secrets), pas la valeur commerciale. Dépend de dépôts publics : non rejouable par un tiers si un dépôt devient privé. Les actifs hors GitHub ne sont pas observés."
+timeout_s = 600
+
+[claim.falsification]
+description = "Dépôt piégé : du code qui se signale s'il est exécuté, et une clé factice. L'observateur ne doit que lire et doit signaler la clé."
+command = 'bash "$OMEGA_ROOT/registre/sondes/scan_piege.sh"'
+output_regex = '^piège non exécuté ; clé factice signalée'
+
+[claim.impact]
+beneficiaries = "Le propriétaire du portefeuille de dépôts."
+indicator = "Dépôts inventoriés sans exécuter leur code ; secrets exposés détectés (0 sur 16 à ce jour)."
+method = "Scan des 16 dépôts publics, compté par la sonde ; résultat consigné dans la sortie brute."
+counterfactual = "Sans observateur, l'inventaire se refait à la main à chaque session, dépôt par dépôt."
+
+[[claim]]
+id = "comparaison-sept-criteres"
+domain = "DISCOVERY"
+capability = "Comparer trois candidats sur sept critères et consigner la décision"
+limits = "Non construite dans le moteur. La comparaison de ce cycle (docs/adr/0001) a été faite à la main ; le moteur a un conseil et un classement multicritère, pas ce protocole."
+tags = ["scenario-3"]
+
+# ------------------------------------------------------------------------------------------ INTERNET
+
+[[claim]]
+id = "recherche-multi-source"
+domain = "INTERNET"
+capability = "Recherche parallèle multi-sources avec citations, déduplication, cache et reprise"
+limits = "Non construite. Le moteur sait seulement lire des flux RSS (option « watch », non prouvée ici). Les recherches de ce cycle ont été faites par l'agent de session, pas par le moteur."
+tags = ["scenario-1"]
+
+# --------------------------------------------------------------------------------------- ENGINEERING
+
+[[claim]]
+id = "livraison-projet"
+domain = "ENGINEERING"
+capability = "Inspecter, corriger, tester et livrer un projet de code"
+limits = "Non construite dans le moteur. C'est l'agent de session qui le fait, sous revue humaine par PR : ce cycle, le correctif de `registre-ajout-seul`."
+tags = ["scenario-2"]
+
+# ------------------------------------------------------------------------------------------ BUSINESS
+
+[[claim]]
+id = "encaissement-et-enveloppe"
+domain = "BUSINESS"
+capability = "Enregistrer un encaissement et en déduire au centime l'enveloppe de dépense autorisée"
+subject = "moteur"
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget'''
+output_regex = 'Disponible : 10,00 € sur une enveloppe de 10,00 €'
+scope = "Un encaissement de 100 € déclaré en ligne de commande sur un espace neuf ; enveloppe attendue : 10 %."
+limits = "Montants fictifs. Aucun encaissement réel n'a encore été enregistré : le chiffre d'affaires encaissé de NOVARYS est de 0 €."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Double comptage : le même encaissement (même référence) déclaré deux fois ne doit compter qu'une fois."
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget'''
+output_regex = 'Disponible : 10,00 € sur une enveloppe de 10,00 €'
+
+[[claim]]
+id = "premier-encaissement-reel"
+domain = "BUSINESS"
+capability = "Offre mise en vente et premier encaissement réel vérifié"
+limits = "Non atteint : 0 € encaissé. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation."
+tags = ["scenario-4"]
+
+# -------------------------------------------------------------------------------------------- AGENTS
+
+[[claim]]
+id = "repartition-missions-agents"
+domain = "AGENTS"
+capability = "Répartir des missions entre agents déclarés selon leurs capacités et leur charge"
+subject = "moteur"
+command = 'uv run pytest -o addopts="" -q tests/skills/test_intelligent_management.py'
+output_regex = '^\d+ passed'
+scope = "Tests du moteur pour la compétence « intelligent-management »."
+limits = "Tests unitaires seulement, sans attaque : ÉTAYÉ au mieux. Aucun agent réel n'est branché sur le moteur."
+tags = ["ci"]
+
+[[claim]]
+id = "orchestration-agents"
+domain = "AGENTS"
+capability = "Faire travailler des agents spécialisés en parallèle et trancher selon les preuves"
+limits = "Non construite. Les agents de ce cycle (relecture indépendante) ont été lancés par l'agent de session."
+
+# -------------------------------------------------------------------------------------------- MEMORY
+
+[[claim]]
+id = "registre-ajout-seul"
+domain = "MEMORY"
+capability = "Le registre financier, les dépenses approuvées et le journal d'audit ne peuvent pas être réécrits"
+subject = "moteur"
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" modifier'
+output_regex = '^6/6 tentatives refusées ; données intactes'
+scope = "Toute écriture SQL ordinaire sur la base du moteur, y compris par une connexion directe."
+limits = "Hors périmètre : un accès au fichier de base permet de supprimer les déclencheurs. Les données de la sonde sont fictives."
+tags = ["ci", "scenario-6"]
+
+[claim.falsification]
+description = "INSERT OR REPLACE : SQLite supprime la ligne en conflit sans déclencher l'interdiction de suppression. Tentative de réécrire un encaissement, une dépense et une ligne d'audit."
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" remplacer'
+output_regex = '^4/4 tentatives refusées ; données intactes'
+
+[claim.impact]
+beneficiaries = "Le propriétaire : le budget autorisé se calcule sur ce registre."
+indicator = "Réécritures acceptées du registre, des dépenses ou de l'audit : 0 attendu."
+method = "Dix tentatives de modification, suppression et remplacement par une connexion SQL directe."
+counterfactual = "Un encaissement réécrit à la hausse gonfle d'autant l'enveloppe de dépense de 10 %."
+
+[[claim]]
+id = "reprise-tache-interrompue"
+domain = "MEMORY"
+capability = "Une tâche interrompue est reprise sans refaire les étapes déjà validées"
+subject = "moteur"
+command = 'uv run pytest -o addopts="" -q tests/test_automation.py::test_expired_lease_is_recovered tests/test_automation.py::test_steps_are_checkpointed'
+output_regex = '^2 passed'
+scope = "File de tâches durable du moteur : bail expiré récupéré, étapes validées conservées."
+limits = "Tests unitaires seulement : aucune interruption réelle (processus tué) n'a été provoquée. ÉTAYÉ au mieux."
+tags = ["ci", "scenario-5"]
+
+[[claim]]
+id = "etat-persistant-a-jour"
+domain = "MEMORY"
+capability = "L'état du moteur est sauvegardé à chaque cycle quotidien"
+kind = "reel"
+subject = "moteur"
+command = '''git fetch -q --depth=1 origin sovereign-state 2> /dev/null && ref=FETCH_HEAD || ref=origin/sovereign-state
+age=$(( ($(date +%s) - $(git log -1 --format=%ct "$ref")) / 86400 ))
+echo "dernier état sauvegardé : il y a $age jour(s)"
+test "$age" -le 2'''
+output_regex = '^dernier état sauvegardé'
+scope = "Branche `sovereign-state` du dépôt du moteur, alimentée par le cycle quotidien GitHub Actions."
+limits = "Depuis le 18/11/2026 le cycle quotidien se termine « réussi » en dix secondes sans rien exécuter : son garde-fou de confidentialité le bloque parce que le dépôt est public. Décision du propriétaire : rendre le dépôt privé, ou autoriser l'état public."
+
+# --------------------------------------------------------------------------------------------- OMEGA
+
+[[claim]]
+id = "outil-de-preuve"
+domain = "OMEGA"
+capability = "L'outil de preuve passe ses contrôles : lint, types et tests, cas d'attaque compris"
+command = '''uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy && uv run pytest -o addopts="" -q'''
+output_regex = '^\d+ passed'
+scope = "Ce dépôt : statuts calculés, registre chaîné, environnement sans secret, sorties retenues en cas de fuite."
+limits = "L'outil prouve qu'une commande donne le résultat attendu ; il ne juge pas si la commande choisie démontre bien la capacité. Ce jugement reste une relecture humaine du référentiel."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Registre maquillé : un ÉCHEC réel est réécrit en réussite dans un dépôt jetable. `omega check` doit le refuser."
+command = 'bash "$OMEGA_ROOT/registre/sondes/registre_falsifie.sh"'
+output_regex = 'refusé par omega check$'
+
+[[claim]]
+id = "reproduction-par-un-tiers"
+domain = "OMEGA"
+capability = "Une capacité prouvée est reproduite par un second acteur, qui l'écrit au registre"
+limits = "Non construite. La CI rejoue les preuves étiquetées « ci » à chaque PR (`omega verify`) mais n'écrit pas au registre : aucun niveau VALIDÉ n'est donc atteignable aujourd'hui."
+tags = ["scenario-7"]
+
+# ----------------------------------------------------------------------------------------- SOVEREIGN
+
+[[claim]]
+id = "depense-sans-encaissement-refusee"
+domain = "SOVEREIGN"
+capability = "Une dépense est refusée tant qu'aucun argent n'a réellement été encaissé"
+subject = "moteur"
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign finance expense 50 outils --vendor sonde'
+output_regex = '"status": "rejected"'
+scope = "Demande de dépense en ligne de commande sur un espace sans encaissement (règle : 10 % des encaissements réels)."
+limits = "Le moteur autorise ou refuse ; il n'a aucun accès bancaire et ne peut ni payer ni empêcher un paiement fait ailleurs."
+tags = ["ci", "scenario-6"]
+
+[claim.falsification]
+description = "Chiffre d'affaires espéré : une facture de 100 000 € émise mais non encaissée ne doit ouvrir aucun budget."
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance invoice ClientFictif 100000 > /dev/null && uv run sovereign finance expense 50 outils --vendor sonde'''
+output_regex = '"status": "rejected"'
+
+[claim.impact]
+beneficiaries = "Le propriétaire."
+indicator = "Dépenses approuvées sans encaissement réel : 0."
+method = "Demande de dépense sur un espace sans encaissement, puis après émission d'une facture non encaissée."
+counterfactual = "Sans la règle, un agent pourrait engager une dépense sur la foi d'un chiffre d'affaires seulement espéré."
+
+[[claim]]
+id = "aucune-approbation-par-agent"
+domain = "SOVEREIGN"
+capability = "Aucun outil exposé aux agents ne permet d'approuver une dépense ni de déclarer un encaissement"
+subject = "moteur"
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" lister'
+output_regex = "outils d'approbation ou d'encaissement : \\[\\]$"
+scope = "Les outils réellement exposés par le serveur MCP du moteur au commit épinglé."
+limits = "Au commit épinglé, le filtre de surface laisse passer l'alias « encaissements » de l'import CSV : c'est le registre qui refuse (défense en profondeur). L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
+tags = ["ci", "scenario-6"]
+
+[claim.falsification]
+description = "Un agent tente de se déclarer 100 000 € d'encaissement par les outils exposés (import CSV sous deux noms, exécution directe de la compétence) pour s'ouvrir un budget."
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" attaquer'
+output_regex = 'enveloppe de dépense : 0\.00 €$'

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  outil:
+    name: Outil de preuve (lint, types, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: Dépendances (verrouillées)
+        run: uv sync --locked
+      - name: Ruff (lint)
+        run: uv run ruff check src tests
+      - name: Ruff (format)
+        run: uv run ruff format --check src tests
+      - name: Mypy
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest -o addopts="" -q
+
+  preuves:
+    name: Registre intact et preuves rejouées
+    runs-on: ubuntu-latest
+    env:
+      BASE_REF: ${{ github.base_ref || 'main' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: Dépendances (verrouillées)
+        run: uv sync --locked
+      - name: Registre intact, prolongeant celui de la base, fichiers générés à jour
+        run: |
+          base="$RUNNER_TEMP/base.jsonl"
+          git rev-parse --verify --quiet "origin/$BASE_REF" > /dev/null
+          if git cat-file -e "origin/$BASE_REF:registre/preuves.jsonl" 2> /dev/null; then
+            git show "origin/$BASE_REF:registre/preuves.jsonl" > "$base"
+          else
+            : > "$base"  # la branche de base n'a pas encore de registre
+          fi
+          uv run omega check --base "$base"
+      - name: Moteur au commit épinglé par le référentiel
+        run: |
+          commit=$(python3 -c "import tomllib; print(tomllib.load(open('registre/capacites.toml', 'rb'))['subjects']['moteur']['commit'])")
+          git clone -q https://github.com/haynbroit-alt/SOVEREIGN "$RUNNER_TEMP/moteur"
+          git -C "$RUNNER_TEMP/moteur" checkout -q "$commit"
+          cd "$RUNNER_TEMP/moteur" && uv sync --locked
+      - name: Preuves rejouées dans un second environnement (sans écrire au registre)
+        run: uv run omega verify --tag ci --actor ci --subject "moteur=$RUNNER_TEMP/moteur"
