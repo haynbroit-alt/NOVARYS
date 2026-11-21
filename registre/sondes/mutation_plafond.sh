@@ -8,7 +8,10 @@ mkdir -p "$copie"
 cp -r "$OMEGA_SUBJECT_MOTEUR/src" "$OMEGA_SUBJECT_MOTEUR/tests" "$copie/"
 cible="$copie/src/sovereign/config.py"
 cd "$OMEGA_SUBJECT_MOTEUR"
-essai() { PYTHONPATH="$copie/src" uv run python -m pytest -o addopts="" -q -p no:cacheprovider "$copie/tests/test_core.py"; }
+# Sans cache de code compilé (-B) : la mutation garde la taille du fichier et peut tomber dans la même seconde
+# que le témoin ; Python réutiliserait alors le code compilé du témoin et la mutation ne serait pas chargée.
+find "$copie" -name __pycache__ -prune -exec rm -rf {} +
+essai() { PYTHONPATH="$copie/src" uv run python -B -m pytest -o addopts="" -q -p no:cacheprovider "$copie/tests/test_core.py"; }
 if ! essai > "$OMEGA_TMP/temoin.txt" 2>&1; then
   echo "témoin en échec avant toute mutation : la sonde est à revoir"
   exit 3
