@@ -13,8 +13,8 @@
 | **Jeun** — MULTIVERSE, plusieurs VOD d'un même événement sur une horloge commune | Outil en ligne. 935 lignes, 7 cas de test, 2 workflows. | Le test de 7 jours prévu par le dépôt ne peut pas être mesuré : le compteur de visites gratuit n'est pas activé, il faut un compte créé par le propriétaire. Pas de modèle de revenu. | Activer le compteur, puis lancer le test de 7 jours (seuil du dépôt : 30 visiteurs inconnus et 3 liens créés par d'autres). |
 | **Toon-o-Matic** — Toon-o-Matic, usine de web-série animée | Chaîne écriture, voix, animation, montage, revue humaine. 8 396 lignes, 70 cas de test, 1 workflow. | La production réelle demande une dépense, refusée tant que rien n'est encaissé. Les revenus de plateformes vidéo supposent des seuils d'audience. | Aucune à 0 € au-delà du mode simulé. À reprendre quand une enveloppe de dépense existera. |
 | **Hive** — HIVE, colonie d'agents sous contrôle humain | Agents coordonnés par traces sur un tableau commun. 7 106 lignes, 54 cas de test, pas de CI. Feuille de route du dépôt : jours 2 à 7 « à faire ». | Aucun modèle de langage branché (jour 2 de sa feuille de route). Pas d'offre. | Aucune action rentable directe. Décision à prendre : en faire la brique AGENTS du moteur, ou le geler. |
-| **SOVEREIGN** — Le moteur : noyau, registre financier, mémoire, validations humaines | Moteur de NOVARYS : base SQLite, règle des 10 %, mémoire des décisions, CLI, API REST, serveur MCP. 20 081 lignes, 238 cas de test relevés par l'observateur, 2 workflows. Aucune donnée d'entreprise chargée. | Défaut trouvé ce cycle : registre financier et audit réécrivables par INSERT OR REPLACE (correctif proposé en PR). Le cycle quotidien n'exécute plus rien depuis le 18/11/2026 parce que le dépôt est public. | Fusionner le correctif, décider de la visibilité du dépôt pour relancer le cycle quotidien, puis y enregistrer le premier encaissement réel quand il existera. |
-| **NOVARYS** — Ce dépôt : charte, protocole de preuves Ω, registres | Outil de preuves, référentiel des capacités, registre des preuves et registre des actifs. Créé dans ce cycle. | Dépôt public : aucune donnée privée ne peut y être mémorisée. La CI n'écrit pas encore au registre (niveau VALIDÉ inatteignable). | Faire de la CI le second acteur du registre ; décider de la visibilité du dépôt. |
+| **SOVEREIGN** — Le moteur : noyau, registre financier, mémoire, validations humaines | Moteur de NOVARYS : base SQLite, règle des 10 %, mémoire des décisions, CLI, API REST, serveur MCP. 20 129 lignes, 239 cas de test relevés par l'observateur, 2 workflows. Aucune donnée d'entreprise chargée. | Le cycle quotidien n'exécute plus rien depuis le 18/11/2026 parce que le dépôt est public. Le défaut du registre financier (réécriture par INSERT OR REPLACE) est corrigé et fusionné. | Décider de la visibilité du dépôt pour relancer le cycle quotidien, puis y enregistrer le premier encaissement réel quand il existera. |
+| **NOVARYS** — Ce dépôt : charte, protocole de preuves Ω, registres | Outil de preuves, référentiel des capacités, registre des preuves et registre des actifs. 1 994 lignes, 33 cas de test relevés par l'observateur, 1 workflow. Créé le 21/11/2026. | Dépôt public : aucune donnée privée ne peut y être mémorisée. La CI n'écrit pas encore au registre (niveau VALIDÉ inatteignable). | Faire de la CI le second acteur du registre ; décider de la visibilité du dépôt. |
 | **Tr** — Page de travail commune de GALILÉE, CORTEX et LAVOISIER | Trois moteurs de recherche réunis autour d'un journal commun, avec leurs échecs publiés. 8 243 lignes, 53 cas de test, pas de CI. Recouvre à 90 % les dépôts 1, A et All selon l'observateur. | Recherche sans offre ni utilisateur. Quatre dépôts pour le même code. | Aucune action rentable identifiée. Garder Tr comme référence et archiver les trois copies réduirait la dispersion : décision du propriétaire. |
 | **1** — CORTEX, boucle cognitive qui pilote une activité inconnue | 8 297 lignes, 34 cas de test, pas de CI. Repris dans Tr. | Recherche sur simulation. Pas d'offre. | Aucune. Voir Tr. |
 | **All** — Galilée, agent scientifique qui retrouve une loi cachée | 3 755 lignes, 29 cas de test, pas de CI. Repris dans Tr. | Recherche sur simulation. Pas d'offre. | Aucune. Voir Tr. |
@@ -144,18 +144,18 @@ Observé le 2026-11-21, commit `8b552da54e4a`.
 
 ## SOVEREIGN — Le moteur : noyau, registre financier, mémoire, validations humaines
 
-Observé le 2026-11-21, commit `62ecac3ada8b`.
+Observé le 2026-11-21, commit `7cddfbd53ae6`.
 
 - **Localisation** : github.com/haynbroit-alt/SOVEREIGN, dépôt public.
 - **Accès** : Lecture et écriture sur une branche de travail ; fusion par le propriétaire.
-- **État réel** : Moteur de NOVARYS : base SQLite, règle des 10 %, mémoire des décisions, CLI, API REST, serveur MCP. 20 081 lignes, 238 cas de test relevés par l'observateur, 2 workflows. Aucune donnée d'entreprise chargée.
+- **État réel** : Moteur de NOVARYS : base SQLite, règle des 10 %, mémoire des décisions, CLI, API REST, serveur MCP. 20 129 lignes, 239 cas de test relevés par l'observateur, 2 workflows. Aucune donnée d'entreprise chargée.
 - **Fonctions démontrées** : Voir CAPACITES.md : le moteur est le sujet des preuves de ce dépôt.
 - **Dépendances** : Python 3.12 ou plus, 9 dépendances verrouillées.
 - **Coûts** : 0 €.
 - **Réutilisation** : Sert tout le portefeuille : observation des dépôts, contrôle des dépenses, encaissement à partir d'un paiement Stripe signé.
-- **Preuves** : registre/preuves.jsonl de ce dépôt ; 291 tests réussis sur main dans ce cycle.
-- **Blocages** : Défaut trouvé ce cycle : registre financier et audit réécrivables par INSERT OR REPLACE (correctif proposé en PR). Le cycle quotidien n'exécute plus rien depuis le 18/11/2026 parce que le dépôt est public.
-- **Prochaine action rentable** : Fusionner le correctif, décider de la visibilité du dépôt pour relancer le cycle quotidien, puis y enregistrer le premier encaissement réel quand il existera.
+- **Preuves** : registre/preuves.jsonl de ce dépôt ; 292 tests réussis sur main le 21/11/2026.
+- **Blocages** : Le cycle quotidien n'exécute plus rien depuis le 18/11/2026 parce que le dépôt est public. Le défaut du registre financier (réécriture par INSERT OR REPLACE) est corrigé et fusionné.
+- **Prochaine action rentable** : Décider de la visibilité du dépôt pour relancer le cycle quotidien, puis y enregistrer le premier encaissement réel quand il existera.
 
 ## NOVARYS — Ce dépôt : charte, protocole de preuves Ω, registres
 
@@ -163,7 +163,7 @@ Observé le 2026-11-21.
 
 - **Localisation** : github.com/haynbroit-alt/NOVARYS, dépôt public.
 - **Accès** : Lecture et écriture sur une branche de travail ; fusion par le propriétaire.
-- **État réel** : Outil de preuves, référentiel des capacités, registre des preuves et registre des actifs. Créé dans ce cycle.
+- **État réel** : Outil de preuves, référentiel des capacités, registre des preuves et registre des actifs. 1 994 lignes, 33 cas de test relevés par l'observateur, 1 workflow. Créé le 21/11/2026.
 - **Fonctions démontrées** : Voir CAPACITES.md, domaine OMEGA.
 - **Dépendances** : Python 3.12 ou plus, bibliothèque standard seulement ; le moteur pour exécuter ses preuves.
 - **Coûts** : 0 €.
