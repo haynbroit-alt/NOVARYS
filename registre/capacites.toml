@@ -10,7 +10,7 @@
 
 [subjects.moteur]
 repo = "haynbroit-alt/SOVEREIGN"
-commit = "62ecac3ada8b109baed791c2bce6913369c43874"
+commit = "7cddfbd53ae69601b47219f51ea9c0e850fee392"
 path = "../SOVEREIGN"
 
 # ---------------------------------------------------------------------------------------------- CORE
@@ -23,7 +23,7 @@ subject = "moteur"
 command = '''uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy && uv run pytest -o addopts="" -q'''
 output_regex = '^\d+ passed'
 scope = "Moteur SOVEREIGN au commit épinglé, dépendances verrouillées (uv.lock)."
-limits = "Une suite verte prouve ce que la suite teste, pas l'absence de défaut : l'attaque par REPLACE de `registre-ajout-seul` est passée au travers de ses 291 tests."
+limits = "Une suite verte prouve ce que la suite teste, pas l'absence de défaut : jusqu'au commit 62ecac3, l'attaque par REPLACE de `registre-ajout-seul` passait au travers de ses 291 tests."
 tags = ["ci"]
 
 [claim.falsification]
@@ -279,7 +279,7 @@ subject = "moteur"
 command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" lister'
 output_regex = "outils d'approbation ou d'encaissement : \\[\\]$"
 scope = "Les outils réellement exposés par le serveur MCP du moteur au commit épinglé."
-limits = "Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Au commit épinglé, le filtre de surface laisse passer l'alias « encaissements » : c'est le registre qui refuse (défense en profondeur). L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
+limits = "Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Jusqu'au commit 62ecac3, le filtre de surface laissait passer l'alias « encaissements » et seul le registre refusait ; les deux refusent désormais. L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
 tags = ["ci", "scenario-6"]
 
 [claim.falsification]
