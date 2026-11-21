@@ -9,7 +9,7 @@ while read -r depot; do
   echo "observé : $depot au commit $(git -C "$OMEGA_TMP/depots/${depot#*/}" rev-parse --short=12 HEAD)"
 done < "$OMEGA_ROOT/registre/depots.txt"
 cd "$OMEGA_SUBJECT_MOTEUR"
-SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign ecosystem scan "$OMEGA_TMP/depots" > "$OMEGA_TMP/scan.json"
+SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run sovereign ecosystem scan "$OMEGA_TMP/depots" > "$OMEGA_TMP/scan.json"
 python3 - "$OMEGA_TMP/scan.json" <<'PY'
 import json
 import sys

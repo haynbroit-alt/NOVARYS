@@ -21,7 +21,7 @@ printf 'AWS_ACCESS_KEY_ID = "%s%s"\n' "AKIA" "QWERTYUIOPASDFGH" > reglages.py
 git add -A
 git -c user.name=sonde -c user.email=sonde@invalid commit -qm "dépôt piégé"
 cd "$OMEGA_SUBJECT_MOTEUR"
-SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign ecosystem scan "$OMEGA_TMP/depots" > "$OMEGA_TMP/scan.json"
+SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run sovereign ecosystem scan "$OMEGA_TMP/depots" > "$OMEGA_TMP/scan.json"
 if [ -e "$depot/EXECUTE" ]; then
   echo "PIÈGE DÉCLENCHÉ : du code du dépôt observé a été exécuté"
   exit 1

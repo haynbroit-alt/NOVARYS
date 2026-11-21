@@ -37,7 +37,7 @@ id = "cli-etat-systeme"
 domain = "CORE"
 capability = "La ligne de commande du moteur rend l'état du système sur un espace neuf"
 subject = "moteur"
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign status'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run sovereign status'
 output_regex = 'Système opérationnel'
 scope = "Commande `sovereign status` sur un dossier de données vide."
 limits = "Espace vide : aucune donnée d'entreprise. L'API REST et le serveur MCP ne sont couverts que par les tests du moteur ; l'interface web exigée par le cahier des charges n'existe pas."
@@ -45,7 +45,7 @@ tags = ["ci"]
 
 [claim.falsification]
 description = "Base de données corrompue : le moteur ne doit pas se déclarer opérationnel."
-command = '''mkdir -p "$OMEGA_TMP/home" && echo "ceci n'est pas une base" > "$OMEGA_TMP/home/sovereign.db" && SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign status'''
+command = '''mkdir -p "$OMEGA_TMP/espace" && echo "ceci n'est pas une base" > "$OMEGA_TMP/espace/sovereign.db" && SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run sovereign status'''
 exit_code = 1
 output_regex = 'file is not a database'
 
@@ -62,7 +62,7 @@ id = "directeur-boucle-demo"
 domain = "INTELLIGENCE"
 capability = "La boucle du directeur s'exécute de bout en bout sur le jeu de démonstration, et son mode à blanc n'exécute rien"
 subject = "moteur"
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign init --demo > /dev/null && uv run sovereign director "Que dois-je décider cette semaine ?" --deep --dry-run'''
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/espace" && uv run sovereign init --demo > /dev/null && uv run sovereign director "Que dois-je décider cette semaine ?" --deep --dry-run'''
 output_regex = '(?s)Skill\(s\).*constat\(s\).*recommandation\(s\).*Conseil.*simulation'
 scope = "Jeu de données de démonstration fourni par le moteur, mode à blanc, sans appel à un modèle de langage."
 limits = "La preuve établit que chaque phase laisse sa trace dans le rapport (compétences mobilisées, constats, recommandations, conseil, simulation) et que le mode à blanc ne crée rien. Elle ne mesure pas la qualité des décisions : données de démonstration, aucune donnée d'entreprise chargée."
@@ -70,7 +70,7 @@ tags = ["ci"]
 
 [claim.falsification]
 description = "Le mode à blanc ne doit rien exécuter : mêmes nombres de dépenses, validations, tâches, décisions et écritures avant et après."
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign init --demo > /dev/null
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/espace" && uv run sovereign init --demo > /dev/null
 compter() { python3 -c "import sqlite3; c = sqlite3.connect('$SOVEREIGN_HOME/sovereign.db'); print([c.execute(f'select count(*) from {t}').fetchone()[0] for t in ('expenses', 'approvals', 'tasks', 'decisions', 'ledger')])"; }
 avant=$(compter)
 uv run sovereign director "Faut-il dépenser 5000 € en publicité ?" --deep --dry-run > /dev/null
@@ -136,7 +136,7 @@ id = "encaissement-et-enveloppe"
 domain = "BUSINESS"
 capability = "Enregistrer un encaissement et en déduire au centime l'enveloppe de dépense autorisée"
 subject = "moteur"
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/espace" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
 output_regex = '"summary": "Disponible : 10,00 € sur une enveloppe de 10,00 €'
 scope = "Un encaissement de 100 € déclaré en ligne de commande sur un espace neuf ; enveloppe attendue : 10 %."
 limits = "Montants fictifs. Aucun encaissement réel n'est enregistré dans le moteur à ce jour."
@@ -144,7 +144,7 @@ tags = ["ci"]
 
 [claim.falsification]
 description = "Double comptage : le même encaissement (même référence) déclaré deux fois ne doit compter qu'une fois."
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/espace" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
 output_regex = '"summary": "Disponible : 10,00 € sur une enveloppe de 10,00 €'
 
 [[claim]]
@@ -180,7 +180,7 @@ id = "registre-ajout-seul"
 domain = "MEMORY"
 capability = "Le registre financier, les dépenses approuvées et le journal d'audit ne peuvent pas être réécrits"
 subject = "moteur"
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" modifier'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" modifier'
 output_regex = '^6/6 tentatives refusées ; données intactes'
 scope = "Toute écriture SQL ordinaire sur la base du moteur, y compris par une connexion directe."
 limits = "Hors périmètre : un accès au fichier de base permet de supprimer les déclencheurs. Les données de la sonde sont fictives."
@@ -188,7 +188,7 @@ tags = ["ci", "scenario-6"]
 
 [claim.falsification]
 description = "INSERT OR REPLACE : SQLite supprime la ligne en conflit sans déclencher l'interdiction de suppression. Tentative de réécrire un encaissement, une dépense et une ligne d'audit."
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" remplacer'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/ajout_seul.py" remplacer'
 output_regex = '^4/4 tentatives refusées ; données intactes'
 
 [claim.impact]
@@ -254,7 +254,7 @@ id = "depense-sans-encaissement-refusee"
 domain = "SOVEREIGN"
 capability = "Une dépense est refusée tant qu'aucun argent n'a réellement été encaissé"
 subject = "moteur"
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run sovereign finance expense 50 outils --vendor sonde'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run sovereign finance expense 50 outils --vendor sonde'
 output_regex = '"status": "rejected"'
 scope = "Demande de dépense en ligne de commande sur un espace sans encaissement (règle : 10 % des encaissements réels)."
 limits = "Le moteur autorise ou refuse ; il n'a aucun accès bancaire et ne peut ni payer ni empêcher un paiement fait ailleurs."
@@ -262,7 +262,7 @@ tags = ["ci", "scenario-6"]
 
 [claim.falsification]
 description = "Chiffre d'affaires espéré : une facture de 100 000 € émise mais non encaissée ne doit ouvrir aucun budget."
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance invoice ClientFictif 100000 > /dev/null && uv run sovereign finance expense 50 outils --vendor sonde'''
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/espace" && uv run sovereign finance invoice ClientFictif 100000 > /dev/null && uv run sovereign finance expense 50 outils --vendor sonde'''
 output_regex = '"status": "rejected"'
 
 [claim.impact]
@@ -276,7 +276,7 @@ id = "aucune-approbation-par-agent"
 domain = "SOVEREIGN"
 capability = "Par les outils exposés aux agents, on ne peut ni approuver une dépense ni se déclarer un encaissement"
 subject = "moteur"
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" lister'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" lister'
 output_regex = "outils d'approbation ou d'encaissement : \\[\\]$"
 scope = "Les outils réellement exposés par le serveur MCP du moteur au commit épinglé."
 limits = "Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Au commit épinglé, le filtre de surface laisse passer l'alias « encaissements » : c'est le registre qui refuse (défense en profondeur). L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
@@ -284,5 +284,5 @@ tags = ["ci", "scenario-6"]
 
 [claim.falsification]
 description = "Un agent tente de se déclarer 100 000 € d'encaissement par quatre voies (import CSV sous deux noms, compétence finance en direct, facture émise puis déclarée encaissée), puis demande une dépense."
-command = 'SOVEREIGN_HOME="$OMEGA_TMP/home" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" attaquer'
+command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" attaquer'
 output_regex = '^4 tentatives d.encaissement par un agent ; enveloppe de dépense : 0\.00 €$'
