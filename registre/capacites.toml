@@ -10,7 +10,7 @@
 
 [subjects.moteur]
 repo = "haynbroit-alt/SOVEREIGN"
-commit = "62ecac3ada8b109baed791c2bce6913369c43874"
+commit = "7cddfbd53ae69601b47219f51ea9c0e850fee392"
 path = "../SOVEREIGN"
 
 # ---------------------------------------------------------------------------------------------- CORE
@@ -23,7 +23,7 @@ subject = "moteur"
 command = '''uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy && uv run pytest -o addopts="" -q'''
 output_regex = '^\d+ passed'
 scope = "Moteur SOVEREIGN au commit épinglé, dépendances verrouillées (uv.lock)."
-limits = "Une suite verte prouve ce que la suite teste, pas l'absence de défaut : l'attaque par REPLACE de `registre-ajout-seul` est passée au travers de ses 291 tests."
+limits = "Une suite verte prouve ce que la suite teste, pas l'absence de défaut : jusqu'au commit 62ecac3, l'attaque par REPLACE de `registre-ajout-seul` passait au travers de ses 291 tests."
 tags = ["ci"]
 
 [claim.falsification]
@@ -154,6 +154,30 @@ capability = "Offre mise en vente et premier encaissement réel vérifié"
 limits = "Non démontré : aucun encaissement n'est enregistré dans le moteur, et les ventes éventuelles d'actifs hors GitHub sont inconnues de ce dépôt. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation."
 tags = ["scenario-4"]
 
+[[claim]]
+id = "reacher-lecture-comptes"
+domain = "BUSINESS"
+capability = "REACHER : lire les performances et les ventes des comptes commerciaux du propriétaire"
+limits = "Non démontré. Au 21/11/2026, aucun des sept comptes sondés n'est lisible : autorisation expirée, comptes non reliés, boutique bloquée. Le détail est dans le tableau de bord privé."
+
+[[claim]]
+id = "reacher-brief-quotidien"
+domain = "BUSINESS"
+capability = "REACHER : chaque jour, mettre le tableau de bord à jour et proposer au plus trois actions"
+limits = "Non construit. Aucune tâche programmée tant qu'aucun compte n'est lisible et que le propriétaire ne l'a pas demandée : un brief sans donnée serait du travail fictif."
+
+[[claim]]
+id = "reacher-publication-validee"
+domain = "BUSINESS"
+capability = "REACHER : produire un contenu commercial et le publier après validation du propriétaire"
+limits = "Non démontré. Aucun réseau n'est relié à un outil de publication ; aucun contenu n'a été soumis ni publié."
+
+[[claim]]
+id = "reacher-prospects-commandes"
+domain = "BUSINESS"
+capability = "REACHER : trouver des prospects, répondre aux demandes et suivre les commandes"
+limits = "Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer."
+
 # -------------------------------------------------------------------------------------------- AGENTS
 
 [[claim]]
@@ -279,7 +303,7 @@ subject = "moteur"
 command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" lister'
 output_regex = "outils d'approbation ou d'encaissement : \\[\\]$"
 scope = "Les outils réellement exposés par le serveur MCP du moteur au commit épinglé."
-limits = "Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Au commit épinglé, le filtre de surface laisse passer l'alias « encaissements » : c'est le registre qui refuse (défense en profondeur). L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
+limits = "Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Jusqu'au commit 62ecac3, le filtre de surface laissait passer l'alias « encaissements » et seul le registre refusait ; les deux refusent désormais. L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues."
 tags = ["ci", "scenario-6"]
 
 [claim.falsification]

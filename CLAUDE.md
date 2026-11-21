@@ -1,7 +1,8 @@
 # NOVARYS — notes pour les agents de code
 
 ## Reprise : par où commencer chaque session
-1. Lire le dernier fichier de `journal/` (état vérifié, blocages, prochaine action). Ne pas repartir du prompt.
+1. Lire le dernier fichier de `journal/` (état vérifié, blocages, prochaine action) et `DECISIONS.md` (ce qui attend
+   le propriétaire). Ne pas repartir du prompt, ne pas redemander ce qui y est déjà posé.
 2. `.claude/bin/journal check uv run omega check` : le registre doit être intact avant tout travail.
 3. Ne revendiquer aucun avancement qui n'est pas dans `registre/preuves.jsonl` ou dans une PR fusionnée.
 
@@ -21,7 +22,10 @@
   preuves : relancer `omega run` dans la même PR.
 - Cycle borné : 10 actions, 4 heures, 0 €. Fin de cycle = un fichier `journal/C-NNNN.md` (résultats, commandes,
   preuves, erreurs, coûts, blocages, prochaine action). Cinq cycles sans progrès mesuré : changer de méthode.
-- Fusion, dépense, publication, envoi de message, création de compte : décisions du propriétaire.
+- Fusion, dépense, publication, envoi de message, création de compte : décisions du propriétaire. Les préparer dans
+  `DECISIONS.md` (ce que ça débloque, coût, réponse en un mot) et continuer ce qui n'en dépend pas.
+- Priorité (ADR 0002) : le premier encaissement. Deux missions actives au plus ; rien de nouveau à construire
+  tant qu'une mission active ne l'exige pas.
 
 ## Fiabilité avant sobriété — la preuve prime sur le plafond de sortie
 - Le plafond (15 000 caractères) ne doit jamais coûter une preuve. Une sortie d'échec trop longue est coupée en
@@ -47,7 +51,7 @@
 - Modèles : sous-agent haiku pour chercher, sonnet pour implémenter ou relire, opus pour décider, fable seulement
   quand la difficulté l'exige. `/clear` entre deux tâches sans lien, `/compact` en disant quoi garder, `/context`
   pour voir ce qui pèse.
-- Carte (au lieu d'ouvrir les fichiers un par un) : `docs/` (cahier des charges, décisions), `journal/` (cycles),
+- Carte (au lieu d'ouvrir les fichiers un par un) : `docs/` (cahier des charges, décisions, REACHER), `.claude/skills/reacher/` (méthode commerciale), `journal/` (cycles),
   `registre/capacites.toml` (ce qui est revendiqué), `registre/actifs.toml` (actifs), `registre/preuves.jsonl`
   (preuves, ajout seul), `registre/sondes/` (commandes de preuve et d'attaque), `src/novarys_omega/` : `model`
   (référentiel, statuts, niveaux), `runner` (exécution sans secrets, calcul du statut), `registry` (chaîne

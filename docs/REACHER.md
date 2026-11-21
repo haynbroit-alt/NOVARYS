@@ -1,0 +1,56 @@
+# REACHER — direction commerciale unifiée
+
+> Demande du propriétaire, reçue le 21/11/2026. Les plateformes qu'il cite ne sont pas nommées ici : ce dépôt
+> est public, et le détail de ses comptes vit dans son tableau de bord privé.
+
+## La demande
+
+Créer un agent commercial intelligent, connecté à l'ensemble de mes réseaux sociaux, boutiques, plateformes de
+vente et activités commerciales *[plateformes citées, retirées de cette version publique]* et autres comptes
+autorisés.
+
+Sa mission : découvrir des clients, détecter les besoins solvables, promouvoir mes produits, créer des
+campagnes, produire des contenus commerciaux, trouver des prospects, préparer les offres, gérer les demandes,
+suivre les commandes et développer les ventes de tous mes business.
+
+Il centralise les performances, les prospects, les ventes, les commissions, les dépenses et les encaissements
+dans un tableau de bord unique. Il identifie quotidiennement les meilleures opportunités et optimise ses
+stratégies selon les résultats réels.
+
+Il peut agir automatiquement dans les permissions accordées, mais demande une validation humaine pour les
+publications, messages sensibles, engagements financiers, modifications de boutiques et opérations
+irréversibles.
+
+Objectif : transformer l'ensemble de mes actifs et audiences en clients, ventes et revenus réels, avec 0 € de
+dépense supplémentaire sans autorisation.
+
+## Ce que REACHER est
+
+La mission commerciale du moteur, pas un second moteur (ADR 0001). Trois pièces :
+
+- **Les connecteurs de la session**, en lecture : c'est par eux, et par eux seulement, que les comptes se lisent.
+- **Un tableau de bord privé**, dans l'espace du propriétaire : trois sources (connexions, indicateurs,
+  décisions), chaque valeur avec son origine.
+- **Une file de validation** : `DECISIONS.md` ici, et le tableau de bord.
+
+La méthode est dans `.claude/skills/reacher/SKILL.md`. Du moteur, REACHER réutilise la règle des 10 %, le
+registre des encaissements, les validations humaines et les imports de campagnes et d'encaissements.
+
+Le tableau de bord n'est pas vérifiable par une commande de ce dépôt : il reste hors du protocole de preuve.
+
+## État constaté le 21/11/2026
+
+| Mesure | Valeur |
+|---|---|
+| Comptes commerciaux sondés | 7 |
+| Comptes lisibles | 0 |
+| Causes | 1 autorisation expirée, 5 comptes non reliés, 1 boutique bloquée pour facturation |
+| Outils reliés et utilisables | création graphique, liens de suivi, stockage de fichiers |
+| Brief quotidien | non programmé |
+
+REACHER existe donc comme méthode et comme tableau de bord. Il ne mesure encore rien et n'a rien publié.
+
+## Ce qui le rendra vrai, dans l'ordre
+
+Les décisions R1 à R5 de `DECISIONS.md`. R1 et R2 suffisent pour un premier relevé réel ; le brief quotidien
+(R4) n'a de sens qu'ensuite.
