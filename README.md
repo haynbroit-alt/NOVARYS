@@ -28,7 +28,7 @@ la démontre et l'attaque qui tente de la réfuter. L'outil `omega` exécute, ca
 
 | Statut | Condition, calculée par l'outil |
 |---|---|
-| PROUVÉ | au moins deux exécutions concordantes, ligne de bilan vue, périmètre écrit, attaque tentée et résistée |
+| PROUVÉ | au moins deux exécutions concordantes, ligne de bilan vue, périmètre écrit, code validé dans Git, attaque tentée et résistée |
 | ÉTAYÉ | résultat correct, preuve incomplète |
 | INCONNU | rien d'exécuté, ou sortie retenue parce qu'un secret y apparaissait |
 | CONFLIT | exécutions contradictoires |
@@ -59,11 +59,17 @@ sans modification, et installé (`uv sync --locked` dans son dossier).
 - **L'outil prouve qu'une commande donne le résultat attendu.** Il ne juge pas si la commande choisie démontre
   bien la capacité : ce jugement est une relecture humaine du référentiel, à chaque PR.
 - **Une commande de preuve est du code.** Ne jamais lancer `omega run` sur le référentiel d'un dépôt qu'on ne
-  maîtrise pas. Les commandes tournent sans les secrets de la session, mais avec vos droits sur la machine.
+  maîtrise pas. Les commandes tournent sans les secrets de la session, mais avec vos droits sur la machine :
+  elles peuvent lire vos fichiers et l'environnement d'autres processus. Le retrait des secrets et le contrôle
+  des sorties protègent des fuites accidentelles, pas d'une commande malveillante.
 - **Le registre protège le passé, pas l'écriture.** Une preuve retirée ou réécrite est refusée par la CI. Une
   preuve inventée puis ajoutée proprement n'est démasquée que si elle est rejouée : la CI rejoue celles qui
   portent l'étiquette « ci », les autres reposent sur la relecture de la PR.
-- **Le nom de l'acteur est déclaratif.** Le niveau VALIDÉ (preuve reproduite par un second acteur) ne vaut que
-  si cet acteur est réellement distinct ; aujourd'hui aucun ne l'écrit au registre.
+- **Le niveau VALIDÉ n'est jamais attribué.** Il demanderait une preuve reproduite par un second acteur dont
+  l'identité se vérifie. Le nom d'acteur consigné n'est qu'une déclaration, et la CI rejoue les preuves sans
+  écrire au registre.
+- **Le dépôt évalué est contrôlé par Git, pas au-delà.** Commit épinglé, racine du dépôt, aucun fichier modifié,
+  ajouté ou masqué : tout cela est vérifié. Les fichiers que Git ignore (environnement installé, caches) ne le
+  sont pas ; la CI, elle, repart d'un clone neuf.
 - **Ce dépôt est public.** Rien de privé n'y est mémorisé : ni donnée personnelle, ni compte, ni chiffre d'un
   actif qui n'est pas déjà public.

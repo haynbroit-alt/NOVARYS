@@ -45,6 +45,7 @@ def record(loaded: Charter, claim_id: str, status: str, actor: str = "local", se
         "status": status,
         "runs": [{}, {}],
         "falsification": {"ok": True},
+        "subject": {"name": ".", "commit": "abcdef1234567890", "dirty": False},
     }
 
 
@@ -63,10 +64,9 @@ def test_level_is_deduced_from_proofs(charter: Callable[[str], Charter]) -> None
         level_of(loaded, real, [record(loaded, "reelle", "PROUVE"), record(loaded, "reelle", "ECHEC")])
         == Level.AVAILABLE
     )
-    # Deux preuves du même acteur ne valident rien ; il en faut un second.
-    twice = [record(loaded, "reelle", "PROUVE"), record(loaded, "reelle", "PROUVE")]
-    assert level_of(loaded, real, twice) == Level.OPERATIONAL
-    assert level_of(loaded, real, [*twice, record(loaded, "reelle", "PROUVE", actor="ci")]) == Level.VALIDATED
+    # Un nom d'acteur est une déclaration : deux noms différents ne valident rien. VALIDÉ n'est jamais attribué.
+    two_names = [record(loaded, "reelle", "PROUVE"), record(loaded, "reelle", "PROUVE", actor="ci")]
+    assert level_of(loaded, real, two_names) == Level.OPERATIONAL
     # Des données de test, même reproduites ailleurs, ne rendent pas une fonction opérationnelle.
     both = [record(loaded, "testee", "PROUVE"), record(loaded, "testee", "PROUVE", actor="ci")]
     assert level_of(loaded, tested, both) == Level.TESTED
@@ -91,7 +91,7 @@ def test_matrix_states_the_verdict_and_hides_nothing(charter: Callable[[str], Ch
     assert "| 7 | Reproduction indépendante d'une capacité | aucune | ABSENT |" in text
     assert "(`absente`) | — | ABSENT | non construite |" in text
     assert "une \\| limite" in text  # une barre verticale ne casse pas le tableau
-    assert "attaque résistée · n°2" in text
+    assert "· ce dépôt@abcdef12 · 2 exécution(s) · attaque résistée · n°2" in text
 
 
 def test_verdict_is_operational_only_when_every_domain_is_demonstrated(charter: Callable[[str], Charter]) -> None:

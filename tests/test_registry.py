@@ -73,3 +73,13 @@ def test_extends_means_same_past_and_nothing_removed(tmp_path: Path) -> None:
     altered = json.loads(json.dumps(records))
     altered[0]["status"] = "ECHEC"
     assert not registry.extends(records[:2], altered)  # passé réécrit
+
+
+def test_unusual_characters_and_a_missing_final_newline_do_not_break_the_file(tmp_path: Path) -> None:
+    path = tmp_path / "preuves.jsonl"
+    registry.append(path, {"output": "ligne\u2028suite\u2029fin\x85"})  # séparateurs que splitlines() couperait
+    path.write_text(path.read_text(encoding="utf-8").rstrip("\n"), encoding="utf-8")  # un éditeur a ôté le dernier
+    registry.append(path, {"output": "seconde"})
+    records = registry.read(path)
+    assert [r["seq"] for r in records] == [1, 2] and registry.chain_errors(records) == []
+    assert records[0]["output"] == "ligne\u2028suite\u2029fin\x85"

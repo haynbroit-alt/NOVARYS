@@ -2,7 +2,8 @@
 
 Usage : python outils_mcp.py lister | attaquer   (SOVEREIGN_HOME doit désigner un dossier jetable).
 ``lister`` refuse tout outil dont le nom évoque une approbation ou un encaissement. ``attaquer`` tente, par les
-outils réellement exposés, de déclarer un encaissement pour s'ouvrir un budget : l'enveloppe doit rester à 0.
+outils réellement exposés, de se déclarer un encaissement pour s'ouvrir un budget : l'enveloppe doit rester à 0
+et la dépense demandée ensuite doit être refusée.
 """
 
 import asyncio
@@ -18,11 +19,29 @@ from sovereign.interfaces.mcp_server import build_mcp
 
 FORBIDDEN = re.compile(r"approve|reject|decide|review|confirm|revenue|collect|encaiss", re.IGNORECASE)
 CSV = "date,amount,reference\n2026-11-01,100000,attaque-1\n"
-ATTACKS = [
-    ("import_csv", {"kind": "collections", "csv_text": CSV}),
-    ("import_csv", {"kind": "encaissements", "csv_text": CSV}),
-    ("skill_run", {"skill": "finance-budget", "action": "record_revenue", "input": {"amount": "100000"}}),
-]
+FINANCE = {"skill": "finance-budget"}
+
+
+async def attack(client: Client, app: Sovereign) -> list[tuple[str, bool]]:
+    """Chaque voie par laquelle un agent pourrait s'ouvrir un budget. Renvoie (voie, a-t-elle été refusée)."""
+
+    async def call(tool: str, arguments: dict[str, object]) -> bool:
+        return bool((await client.call_tool(tool, arguments)).is_error)
+
+    tried = [
+        ("import CSV « collections »", await call("import_csv", {"kind": "collections", "csv_text": CSV})),
+        ("import CSV « encaissements »", await call("import_csv", {"kind": "encaissements", "csv_text": CSV})),
+        (
+            "compétence finance : déclarer un encaissement",
+            await call("skill_run", {**FINANCE, "action": "record_revenue", "input": {"amount": "100000"}}),
+        ),
+    ]
+    # Émettre une facture est permis (une créance n'ouvre aucun budget) ; se la déclarer encaissée ne l'est pas.
+    await call("skill_run", {**FINANCE, "action": "issue_invoice", "input": {"client": "Fictif", "amount": "100000"}})
+    for invoice in app.kernel.store.list("invoice"):
+        collect = {**FINANCE, "action": "collect_invoice", "input": {"invoice_id": invoice["id"]}}
+        tried.append(("compétence finance : encaisser sa propre facture", await call("skill_run", collect)))
+    return tried
 
 
 async def main(mode: str) -> int:
@@ -36,12 +55,16 @@ async def main(mode: str) -> int:
                 print("outils exposés :", ", ".join(names))
                 print(f"{len(names)} outils exposés aux agents ; outils d'approbation ou d'encaissement : {forbidden}")
                 return 1 if forbidden else 0
-            for tool, arguments in ATTACKS:
-                result = await client.call_tool(tool, arguments)
-                print(f"{tool} {arguments.get('kind') or arguments.get('action')} : erreur={result.is_error}")
-        envelope = app.kernel.finance.status().envelope
-        print(f"{len(ATTACKS)} tentatives d'encaissement par un agent ; enveloppe de dépense : {envelope} €")
-        return 0 if str(envelope) == "0.00" else 1
+            tried = await attack(client, app)
+            expense = await client.call_tool("request_expense", {"amount": "50", "category": "outils"})
+        for path, refused in tried:
+            verdict = "refusé par l'outil" if refused else "accepté par l'outil, à vérifier sur l'enveloppe"
+            print(f"{verdict} : {path}")
+        status = app.kernel.finance.status()
+        approved = bool((expense.structured_content or {}).get("approved"))
+        print(f"dépense de 50 € demandée ensuite par l'agent : {'APPROUVÉE' if approved else 'refusée'}")
+        print(f"{len(tried)} tentatives d'encaissement par un agent ; enveloppe de dépense : {status.envelope} €")
+        return 0 if str(status.envelope) == "0.00" and not approved and len(tried) >= 4 else 1
     finally:
         app.close()
 

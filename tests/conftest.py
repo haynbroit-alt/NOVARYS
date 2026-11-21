@@ -52,6 +52,8 @@ def charter(root: Path) -> Callable[[str], Charter]:
     def write(text: str) -> Charter:
         target = root / "registre" / "capacites.toml"
         target.write_text(text, encoding="utf-8")
+        git(root, "add", "-A")  # dépôt sans modification en attente : condition d'une preuve complète
+        git(root, "commit", "-qm", "référentiel", "--allow-empty")
         return load_charter(target)
 
     return write

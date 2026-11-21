@@ -29,6 +29,7 @@ DOMAINS = (
     "SOVEREIGN",
 )
 KINDS = ("test", "reel")  # preuve sur données de test, ou sur données et environnement réels
+PROBES = "registre/sondes"  # scripts appelés par les commandes : leur contenu fait partie de ce qui est revendiqué
 _ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 _SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _CLAIM_KEYS = {
@@ -45,6 +46,7 @@ _CLAIM_KEYS = {
     "runs",
     "timeout_s",
     "tags",
+    "covers",
     "falsification",
     "impact",
 }
@@ -130,21 +132,32 @@ class Claim:
     runs: int = 2
     timeout_s: int = 900
     tags: tuple[str, ...] = ()
+    covers: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
 class Charter:
     subjects: dict[str, Subject]
     claims: tuple[Claim, ...]
+    files: dict[str, str]  # chemin relatif à la racine → sha256 du contenu (sondes et chemins « covers »)
 
     def digest(self, claim: Claim) -> str:
-        """Empreinte de ce qui est revendiqué. Si elle change, les preuves antérieures ne valent plus."""
+        """Empreinte de ce qui est revendiqué et de ce qui le vérifie. Si elle change, les preuves ne valent plus.
+
+        Elle couvre la commande, l'attaque, le périmètre, le classement (domaine, étiquettes), le commit épinglé,
+        et le contenu des fichiers de ce dépôt dont dépend la preuve : les sondes citées par les commandes et les
+        chemins « covers ». Seuls le commentaire (limites, impact) et la forme restent hors de l'empreinte.
+        """
 
         def probe(p: Probe | None) -> dict[str, Any] | None:
-            return None if p is None else {"command": p.command, "exit_code": p.exit_code, "regex": p.output_regex}
+            if p is None:
+                return None
+            return {"command": p.command, "exit_code": p.exit_code, "regex": p.output_regex, "why": p.description}
 
+        commands = " ".join(p.command for p in (claim.check, claim.falsification) if p is not None)
         body = {
             "id": claim.id,
+            "domain": claim.domain,
             "capability": claim.capability,
             "kind": claim.kind,
             "subject": claim.subject,
@@ -153,9 +166,23 @@ class Charter:
             "falsification": probe(claim.falsification),
             "scope": claim.scope,
             "runs": claim.runs,
+            "timeout_s": claim.timeout_s,
+            "tags": sorted(claim.tags),
+            "files": {
+                path: sha
+                for path, sha in sorted(self.files.items())
+                if (path.startswith(f"{PROBES}/") and path.removeprefix("registre/") in commands)
+                or any(path == cover or path.startswith(f"{cover}/") for cover in claim.covers)
+            },
         }
         text = json.dumps(body, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
         return hashlib.sha256(text.encode()).hexdigest()
+
+
+def _table(value: Any, where: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{where} : une table est attendue")
+    return value
 
 
 def _only(table: dict[str, Any], allowed: set[str], where: str) -> None:
@@ -173,6 +200,13 @@ def _text(table: dict[str, Any], key: str, where: str, *, required: bool = False
     return value.strip()
 
 
+def _texts(table: dict[str, Any], key: str, where: str) -> tuple[str, ...]:
+    values = table.get(key, [])
+    if not isinstance(values, list) or not all(isinstance(value, str) and value for value in values):
+        raise ValueError(f"{where} : « {key} » doit être une liste de textes")
+    return tuple(values)
+
+
 def _integer(table: dict[str, Any], key: str, default: int, where: str, *, minimum: int | None = None) -> int:
     value = table.get(key, default)
     if not isinstance(value, int) or isinstance(value, bool) or (minimum is not None and value < minimum):
@@ -186,9 +220,11 @@ def _probe(table: dict[str, Any], where: str) -> Probe:
         if not isinstance(regex, str):
             raise ValueError(f"{where} : « output_regex » doit être un texte")
         try:
-            re.compile(regex)
+            vacuous = re.search(regex, "", re.MULTILINE) is not None
         except re.error as exc:
             raise ValueError(f"{where} : expression régulière invalide ({exc})") from exc
+        if vacuous:  # une « ligne de bilan » qu'une sortie vide satisfait ne prouve rien
+            raise ValueError(f"{where} : l'expression attendue correspond à une sortie vide")
     return Probe(
         command=_text(table, "command", where, required=True),
         exit_code=_integer(table, "exit_code", 0, where),
@@ -198,7 +234,7 @@ def _probe(table: dict[str, Any], where: str) -> Probe:
 
 
 def _claim(table: dict[str, Any], subjects: dict[str, Subject], where: str) -> Claim:
-    _only(table, _CLAIM_KEYS, where)
+    _only(_table(table, where), _CLAIM_KEYS, where)
     claim_id = table.get("id")
     if not isinstance(claim_id, str) or not _ID_RE.match(claim_id):
         raise ValueError(f"{where} : identifiant invalide {claim_id!r} (minuscules, chiffres, tirets)")
@@ -212,21 +248,20 @@ def _claim(table: dict[str, Any], subjects: dict[str, Subject], where: str) -> C
     if subject != "." and subject not in subjects:
         raise ValueError(f"{where} : sujet non déclaré {subject!r}")
     check = _probe(table, where) if "command" in table else None
-    if check is None and {"exit_code", "output_regex", "falsification"} & set(table):
-        raise ValueError(f"{where} : résultat attendu ou falsification déclarés sans commande")
+    if check is None and {"exit_code", "output_regex", "falsification", "covers"} & set(table):
+        raise ValueError(f"{where} : résultat attendu, falsification ou fichiers déclarés sans commande")
     falsification = None
     if "falsification" in table:
-        _only(table["falsification"], _PROBE_KEYS, f"{where} (falsification)")
+        _only(_table(table["falsification"], f"{where} (falsification)"), _PROBE_KEYS, f"{where} (falsification)")
         falsification = _probe(table["falsification"], f"{where} (falsification)")
         if not falsification.description:
             raise ValueError(f"{where} : une falsification doit décrire l'attaque tentée")
+        if check is not None and falsification.command == check.command:
+            raise ValueError(f"{where} : l'attaque ne peut pas être la commande de preuve elle-même")
     impact = None
     if "impact" in table:
-        _only(table["impact"], set(_IMPACT_KEYS), f"{where} (impact)")
+        _only(_table(table["impact"], f"{where} (impact)"), set(_IMPACT_KEYS), f"{where} (impact)")
         impact = Impact(*(_text(table["impact"], key, f"{where} (impact)", required=True) for key in _IMPACT_KEYS))
-    tags = table.get("tags", [])
-    if not isinstance(tags, list) or not all(isinstance(tag, str) for tag in tags):
-        raise ValueError(f"{where} : « tags » doit être une liste de textes")
     return Claim(
         id=claim_id,
         domain=table["domain"],
@@ -240,19 +275,35 @@ def _claim(table: dict[str, Any], subjects: dict[str, Subject], where: str) -> C
         impact=impact,
         runs=_integer(table, "runs", 2, where, minimum=1),
         timeout_s=_integer(table, "timeout_s", 900, where, minimum=1),
-        tags=tuple(tags),
+        tags=_texts(table, "tags", where),
+        covers=_texts(table, "covers", where),
     )
+
+
+def _hashes(root: Path, relative: str, where: str) -> dict[str, str]:
+    """Empreintes des fichiers d'un chemin du dépôt (un fichier, ou un dossier parcouru en entier)."""
+
+    target = root / relative
+    if not target.resolve().is_relative_to(root.resolve()) or not target.exists():
+        raise ValueError(f"{where} : chemin introuvable dans ce dépôt ({relative})")
+    files = [target] if target.is_file() else sorted(p for p in target.rglob("*") if p.is_file())
+    return {
+        file.relative_to(root).as_posix(): hashlib.sha256(file.read_bytes()).hexdigest()
+        for file in files
+        if "__pycache__" not in file.parts
+    }
 
 
 def load_charter(path: Path) -> Charter:
     """Lit et valide le référentiel. Toute clé inconnue est une erreur : dans le doute, bloquer."""
 
+    root = path.resolve().parent.parent
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     _only(data, {"subjects", "claim"}, path.name)
     subjects: dict[str, Subject] = {}
-    for name, table in data.get("subjects", {}).items():
+    for name, table in _table(data.get("subjects", {}), "subjects").items():
         where = f"sujet {name}"
-        _only(table, {"repo", "commit", "path"}, where)
+        _only(_table(table, where), {"repo", "commit", "path"}, where)
         if not _ID_RE.match(name):
             raise ValueError(f"{where} : nom invalide (minuscules, chiffres, tirets)")
         commit = _text(table, "commit", where, required=True)
@@ -261,12 +312,16 @@ def load_charter(path: Path) -> Charter:
         subjects[name] = Subject(
             name, _text(table, "repo", where, required=True), commit, _text(table, "path", where, required=True)
         )
+    tables = data.get("claim", [])
+    if not isinstance(tables, list):
+        raise ValueError(f"{path.name} : « claim » doit être une liste de tables ([[claim]])")
     claims: list[Claim] = []
-    seen: set[str] = set()
-    for index, table in enumerate(data.get("claim", []), start=1):
+    files = _hashes(root, PROBES, PROBES) if (root / PROBES).is_dir() else {}
+    for index, table in enumerate(tables, start=1):
         claim = _claim(table, subjects, f"capacité n°{index}")
-        if claim.id in seen:
+        if claim.id in {known.id for known in claims}:
             raise ValueError(f"capacité {claim.id} : identifiant en double")
-        seen.add(claim.id)
+        for cover in claim.covers:
+            files.update(_hashes(root, cover, f"capacité {claim.id}"))
         claims.append(claim)
-    return Charter(subjects, tuple(claims))
+    return Charter(subjects, tuple(claims), files)

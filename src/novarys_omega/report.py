@@ -52,7 +52,9 @@ def level_of(charter: Charter, claim: Claim, records: list[dict[str, Any]]) -> L
 
     ABSENT : fonction non construite. DISPONIBLE : une commande existe, sans preuve valide à ce jour.
     CONNECTÉ : elle s'exécute de bout en bout (ÉTAYÉ). TESTÉ : PROUVÉ sur données de test.
-    OPÉRATIONNEL : PROUVÉ sur données et environnement réels. VALIDÉ : en plus, reproduit par un second acteur.
+    OPÉRATIONNEL : PROUVÉ sur données et environnement réels.
+    VALIDÉ n'est jamais attribué par l'outil : il faudrait une preuve reproduite par un second acteur dont
+    l'identité se vérifie, et le nom d'acteur consigné n'est qu'une déclaration.
     """
 
     if claim.check is None:
@@ -63,10 +65,7 @@ def level_of(charter: Charter, claim: Claim, records: list[dict[str, Any]]) -> L
         return Level.CONNECTED
     if last != Status.PROVEN:
         return Level.AVAILABLE
-    if claim.kind == "test":
-        return Level.TESTED
-    actors = {r["actor"] for r in mine if r["status"] == Status.PROVEN}
-    return Level.VALIDATED if len(actors) >= 2 else Level.OPERATIONAL
+    return Level.TESTED if claim.kind == "test" else Level.OPERATIONAL
 
 
 def _cell(text: str) -> str:
@@ -83,8 +82,11 @@ def _evidence(charter: Charter, claim: Claim, records: list[dict[str, Any]]) -> 
     last = mine[-1]
     attack = last.get("falsification")
     outcome = "non tentée" if attack is None else ("résistée" if attack["ok"] else "RÉUSSIE")
+    subject = last["subject"]
+    code = f"{'ce dépôt' if subject['name'] == '.' else subject['name']}@{subject['commit'][:8]}"
     return (
-        f"{last['at'][:10]} · {last['actor']} · {len(last['runs'])} exécution(s) · attaque {outcome} · n°{last['seq']}"
+        f"{last['at'][:10]} · {last['actor']} · {code} · {len(last['runs'])} exécution(s) · attaque {outcome} "
+        f"· n°{last['seq']}"
     )
 
 
@@ -156,12 +158,14 @@ def capabilities_markdown(charter: Charter, records: list[dict[str, Any]]) -> st
         "## Lecture",
         "",
         "- **Statuts** (calculés à l'exécution) : PROUVÉ — au moins deux exécutions concordantes, ligne de bilan vue,",
-        "  périmètre écrit, attaque tentée et résistée ; ÉTAYÉ — résultat correct mais preuve incomplète ; INCONNU —",
-        "  rien d'exécuté, ou sortie retenue ; CONFLIT — exécutions contradictoires ; ÉCHEC — test échoué ou attaque",
-        "  réussie.",
+        "  périmètre écrit, code validé dans Git, attaque tentée et résistée ; ÉTAYÉ — résultat correct mais preuve",
+        "  incomplète ; INCONNU — rien d'exécuté, ou sortie retenue ; CONFLIT — exécutions contradictoires ; ÉCHEC —",
+        "  test échoué ou attaque réussie.",
+        "- **Ce que PROUVÉ ne dit pas** : que la commande choisie démontre bien la capacité. L'outil vérifie un",
+        "  résultat attendu ; le choix de la commande et de l'attaque se juge en relisant `registre/capacites.toml`.",
         "- **Niveaux** (déduits des preuves) : ABSENT — non construit ; DISPONIBLE — commande déclarée sans preuve",
         "  valide ; CONNECTÉ — ÉTAYÉ ; TESTÉ — PROUVÉ sur données de test ; OPÉRATIONNEL — PROUVÉ sur données",
-        "  réelles ; VALIDÉ — en plus, PROUVÉ par un second acteur.",
+        "  réelles ; VALIDÉ — jamais attribué aujourd'hui : il faudrait un second acteur dont l'identité se vérifie.",
         "- Le numéro en fin de preuve renvoie à la ligne du registre, qui contient la commande et sa sortie brute.",
         "",
     ]

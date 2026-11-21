@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from pathlib import Path
 
@@ -39,8 +40,8 @@ capability = "Une fonction non construite"
 
 @pytest.fixture
 def ready(root: Path, charter: Callable[[str], Charter]) -> Path:
-    charter(TEXT)
     (root / "presence").write_text("", encoding="utf-8")
+    charter(TEXT)
     return root
 
 
@@ -88,6 +89,13 @@ def test_check_catches_tampering_stale_files_and_removed_proofs(
     assert omega(ready, "check") == 1
     assert "contenu modifié" in capsys.readouterr().out
 
+    forged = [json.loads(line) for line in original.splitlines()]
+    forged[1]["status"] = "PROUVE"  # échec maquillé PUIS rescellé : la chaîne est valide, le statut ne l'est pas
+    forged[1]["hash"] = registry.seal(forged[1])
+    proofs.write_text("".join(registry.canonical(r) + "\n" for r in forged), encoding="utf-8")
+    assert omega(ready, "check") == 1
+    assert "preuve n°2 : statut PROUVE alors que les exécutions consignées donnent ECHEC" in capsys.readouterr().out
+
     proofs.write_text(original.splitlines(keepends=True)[0], encoding="utf-8")  # échec retiré de la fin
     omega(ready, "render")
     assert omega(ready, "check") == 0  # la chaîne seule ne voit pas la troncature…
@@ -117,6 +125,11 @@ def test_invalid_input_blocks_with_a_clear_message(root: Path, capsys: pytest.Ca
     target.write_text(TEXT.replace('domain = "INTERNET"', 'domain = "MAGIE"'), encoding="utf-8")
     assert omega(root, "render") == 2
     assert "domaine inconnu" in capsys.readouterr().err
+    target.write_text(
+        TEXT.replace('command = "false"\n\n', 'command = "false"\nfalsification = ""\n\n'), encoding="utf-8"
+    )
+    assert omega(root, "render") == 2  # mauvais type : message clair, pas de trace d'exécution
+    assert "une table est attendue" in capsys.readouterr().err
     target.write_text(TEXT, encoding="utf-8")
     assert omega(root, "run", "--subject", "moteur") == 2
     assert "NOM=CHEMIN" in capsys.readouterr().err

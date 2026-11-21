@@ -41,19 +41,25 @@ def _refuse_floats(value: Any) -> None:
             _refuse_floats(item)
 
 
-def read(path: Path) -> list[dict[str, Any]]:
-    if not path.exists():
-        return []
+def _parse(text: str, name: str) -> list[dict[str, Any]]:
+    # Découpage sur « \n » seul : ``str.splitlines`` couperait aussi sur U+2028, qu'une sortie peut contenir.
+    lines = text.split("\n")
+    if lines[-1] == "":
+        lines.pop()
     records: list[dict[str, Any]] = []
-    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+    for number, line in enumerate(lines, start=1):
         try:
             record = json.loads(line)
         except ValueError as exc:
-            raise ValueError(f"{path.name}, ligne {number} : JSON invalide") from exc
+            raise ValueError(f"{name}, ligne {number} : JSON invalide") from exc
         if not isinstance(record, dict):
-            raise ValueError(f"{path.name}, ligne {number} : un objet est attendu")
+            raise ValueError(f"{name}, ligne {number} : un objet est attendu")
         records.append(record)
     return records
+
+
+def read(path: Path) -> list[dict[str, Any]]:
+    return _parse(path.read_text(encoding="utf-8"), path.name) if path.exists() else []
 
 
 def chain_errors(records: list[dict[str, Any]]) -> list[str]:
@@ -79,13 +85,16 @@ def append(path: Path, body: dict[str, Any]) -> dict[str, Any]:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a+", encoding="utf-8") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)  # un seul écrivain à la fois
-        records = read(path)
+        handle.seek(0)
+        text = handle.read()
+        records = _parse(text, path.name)
         errors = chain_errors(records)
         if errors:
             raise ValueError(f"registre corrompu, ajout refusé — {errors[0]}")
         record = {**body, "seq": len(records) + 1, "prev": records[-1]["hash"] if records else ""}
         record["hash"] = seal(record)
-        handle.write(canonical(record) + "\n")
+        # Si un éditeur a retiré le saut de ligne final, on le remet avant d'écrire : jamais deux preuves par ligne.
+        handle.write(("" if not text or text.endswith("\n") else "\n") + canonical(record) + "\n")
         handle.flush()
         os.fsync(handle.fileno())
     return record
