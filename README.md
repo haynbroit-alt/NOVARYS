@@ -17,9 +17,9 @@ faire, le fait exécuter, l'attaque, et garde la trace de ce qui a tenu et de ce
 | Quels actifs existent, et qu'est-ce qui les bloque ? | Le registre des actifs | [ACTIFS.md](ACTIFS.md) |
 | Où en est le travail ? | Le journal des cycles, le plus récent en dernier | [journal/](journal/) |
 
-NOVARYS n'est pas opérationnel au sens de son cahier des charges, et il n'est pas rentable : 0 € encaissé à ce
-jour. Ces deux faits sont écrits dans les fichiers ci-dessus et se mettent à jour avec les preuves, pas avec
-les intentions.
+NOVARYS n'est pas opérationnel au sens de son cahier des charges, et rien ne prouve qu'il soit rentable : aucun
+encaissement n'est enregistré dans le moteur à ce jour. Les ventes éventuelles d'actifs hors GitHub ne sont pas
+connues de ce dépôt. Ces faits se mettent à jour avec les preuves, pas avec les intentions.
 
 ## Le protocole de preuves Ω
 

@@ -136,22 +136,22 @@ id = "encaissement-et-enveloppe"
 domain = "BUSINESS"
 capability = "Enregistrer un encaissement et en déduire au centime l'enveloppe de dépense autorisée"
 subject = "moteur"
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget'''
-output_regex = 'Disponible : 10,00 € sur une enveloppe de 10,00 €'
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
+output_regex = '"summary": "Disponible : 10,00 € sur une enveloppe de 10,00 €'
 scope = "Un encaissement de 100 € déclaré en ligne de commande sur un espace neuf ; enveloppe attendue : 10 %."
-limits = "Montants fictifs. Aucun encaissement réel n'a encore été enregistré : le chiffre d'affaires encaissé de NOVARYS est de 0 €."
+limits = "Montants fictifs. Aucun encaissement réel n'est enregistré dans le moteur à ce jour."
 tags = ["ci"]
 
 [claim.falsification]
 description = "Double comptage : le même encaissement (même référence) déclaré deux fois ne doit compter qu'une fois."
-command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget'''
-output_regex = 'Disponible : 10,00 € sur une enveloppe de 10,00 €'
+command = '''export SOVEREIGN_HOME="$OMEGA_TMP/home" && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign finance revenue 100 --reference sonde-1 > /dev/null && uv run sovereign budget --json'''
+output_regex = '"summary": "Disponible : 10,00 € sur une enveloppe de 10,00 €'
 
 [[claim]]
 id = "premier-encaissement-reel"
 domain = "BUSINESS"
 capability = "Offre mise en vente et premier encaissement réel vérifié"
-limits = "Non atteint : 0 € encaissé. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation."
+limits = "Non démontré : aucun encaissement n'est enregistré dans le moteur, et les ventes éventuelles d'actifs hors GitHub sont inconnues de ce dépôt. Trois offres sont prêtes mais aucune n'est en vente (voir ACTIFS.md) ; ce qui manque relève du propriétaire : statut, comptes, validation."
 tags = ["scenario-4"]
 
 # -------------------------------------------------------------------------------------------- AGENTS
