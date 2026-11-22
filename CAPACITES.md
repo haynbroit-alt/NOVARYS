@@ -3,12 +3,13 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 16 fonction(s) sur 25 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 19 fonction(s) sur 28 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
 
 Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae6`.
+Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a74371d`.
 
 ## Vue d'ensemble
 
@@ -18,12 +19,12 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | INTELLIGENCE | · | · | · | 1 | · | · |
 | DISCOVERY | 1 | · | · | · | 1 | · |
 | INTERNET | 1 | · | · | · | · | · |
-| ENGINEERING | 1 | · | · | · | · | · |
+| ENGINEERING | 1 | 1 | · | · | · | · |
 | BUSINESS | 7 | · | · | 1 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
-| MEMORY | · | 1 | 1 | 1 | · | · |
+| MEMORY | · | 2 | 1 | 1 | · | · |
 | OMEGA | 1 | · | · | 1 | · | · |
-| SOVEREIGN | · | · | · | 2 | · | · |
+| SOVEREIGN | · | 1 | · | 2 | · | · |
 
 ## Scénarios de validation (cahier des charges, section 14)
 
@@ -33,8 +34,8 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | 2 | Inspection, correction et livraison d'un projet | `livraison-projet` | ABSENT |
 | 3 | Invention comparée et falsifiable | `comparaison-sept-criteres` | ABSENT |
 | 4 | Création d'une offre réellement commercialisable | `premier-encaissement-reel` | ABSENT |
-| 5 | Reprise fiable d'une mission interrompue | `reprise-tache-interrompue` | CONNECTÉ |
-| 6 | Blocage d'une action non autorisée et protection des secrets | `registre-ajout-seul`, `depense-sans-encaissement-refusee`, `aucune-approbation-par-agent` | TESTÉ |
+| 5 | Reprise fiable d'une mission interrompue | `gestion-sauvegarde-restaurable`, `reprise-tache-interrompue` | DISPONIBLE |
+| 6 | Blocage d'une action non autorisée et protection des secrets | `gestion-cloisonnement-des-projets`, `registre-ajout-seul`, `depense-sans-encaissement-refusee`, `aucune-approbation-par-agent` | DISPONIBLE |
 | 7 | Reproduction indépendante d'une capacité | `reproduction-par-un-tiers` | ABSENT |
 
 ## CORE
@@ -69,6 +70,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
 | Inspecter, corriger, tester et livrer un projet de code (`livraison-projet`) | — | ABSENT | non construite | Non construite dans le moteur. C'est l'agent de session qui le fait, sous revue humaine par PR : ce cycle, le correctif de `registre-ajout-seul`. |
+| L'application de travail (OMNIA) passe sa suite de tests (`gestion-suite-verifiee`) | INCONNU | DISPONIBLE | jamais exécutée | Une suite verte prouve ce que la suite teste. Les fournisseurs d'IA et les envois vers les messageries n'y sont éprouvés que contre des réponses simulées. Aucune donnée réelle : le service en ligne n'est pas l'objet de cette preuve. |
 
 ## BUSINESS
 
@@ -94,6 +96,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
+| Sauvegarde chiffrée de toute l'instance, restaurée à l'identique, sans jamais écraser un travail (`gestion-sauvegarde-restaurable`) | INCONNU | DISPONIBLE | jamais exécutée | Données de test. La phrase secrète n'est enregistrée nulle part : perdue, la sauvegarde est irrécupérable. Les fichiers vidéo du studio n'y figurent pas. Sur un hébergement sans disque persistant, la sauvegarde ne protège que si le propriétaire la télécharge. |
 | Le registre financier, les dépenses approuvées et le journal d'audit ne peuvent pas être réécrits (`registre-ajout-seul`) | PROUVÉ | TESTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque résistée · n°20 | Hors périmètre : un accès au fichier de base permet de supprimer les déclencheurs. Les données de la sonde sont fictives. |
 | Une tâche interrompue est reprise sans refaire les étapes déjà validées (`reprise-tache-interrompue`) | ÉTAYÉ | CONNECTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque non tentée · n°21 | Tests unitaires seulement : aucune interruption réelle (processus tué) n'a été provoquée. ÉTAYÉ au mieux. |
 | L'état du moteur est sauvegardé à chaque cycle quotidien (`etat-persistant-a-jour`) | ÉCHEC | DISPONIBLE | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque non tentée · n°22 | Depuis le 18/11/2026 le cycle quotidien se termine « réussi » en dix secondes sans rien exécuter : son garde-fou de confidentialité le bloque parce que le dépôt est public. Décision du propriétaire : rendre le dépôt privé, ou autoriser l'état public. |
@@ -109,6 +112,7 @@ Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
+| Chaque projet garde ses données : comptes, rôles, coordination et mémoire partagée respectent les droits (`gestion-cloisonnement-des-projets`) | INCONNU | DISPONIBLE | jamais exécutée | Données de test. Les droits n'agissent qu'avec des comptes : avec le seul jeton d'accès, qui le détient peut tout. Pas de double authentification. |
 | Une dépense est refusée tant qu'aucun argent n'a réellement été encaissé (`depense-sans-encaissement-refusee`) | PROUVÉ | TESTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque résistée · n°23 | Le moteur autorise ou refuse ; il n'a aucun accès bancaire et ne peut ni payer ni empêcher un paiement fait ailleurs. |
 | Par les outils exposés aux agents, on ne peut ni approuver une dépense ni se déclarer un encaissement (`aucune-approbation-par-agent`) | PROUVÉ | TESTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque résistée · n°24 | Le contrôle lit les noms des outils ; c'est l'attaque qui éprouve leur effet, sur quatre voies seulement. Jusqu'au commit 62ecac3, le filtre de surface laissait passer l'alias « encaissements » et seul le registre refusait ; les deux refusent désormais. L'approbation en ligne de commande n'est pas réservée techniquement à un humain : la barrière réelle est que l'agent n'y a pas recours et que les PR sont relues. |
 

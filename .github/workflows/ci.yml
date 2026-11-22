@@ -62,5 +62,13 @@ jobs:
           git clone -q https://github.com/haynbroit-alt/SOVEREIGN "$RUNNER_TEMP/moteur"
           git -C "$RUNNER_TEMP/moteur" checkout -q "$commit"
           cd "$RUNNER_TEMP/moteur" && uv sync --locked
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Application de travail au commit épinglé par le référentiel
+        run: |
+          commit=$(python3 -c "import tomllib; print(tomllib.load(open('registre/capacites.toml', 'rb'))['subjects']['gestion']['commit'])")
+          git clone -q https://github.com/haynbroit-alt/Logiciel- "$RUNNER_TEMP/gestion"
+          git -C "$RUNNER_TEMP/gestion" checkout -q "$commit"
       - name: Preuves rejouées dans un second environnement (sans écrire au registre)
-        run: uv run omega verify --tag ci --actor ci --subject "moteur=$RUNNER_TEMP/moteur"
+        run: uv run omega verify --tag ci --actor ci --subject "moteur=$RUNNER_TEMP/moteur" --subject "gestion=$RUNNER_TEMP/gestion"
