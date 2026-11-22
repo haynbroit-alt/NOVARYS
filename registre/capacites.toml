@@ -245,7 +245,7 @@ command = '''node --disable-warning=ExperimentalWarning --test --test-name-patte
 output_regex = '^# pass 2$'
 scope = "Deux tests d'OMNIA au commit épinglé : sauvegarde d'un espace, et sauvegarde de l'instance (AES-256-GCM, clé dérivée par scrypt, empreinte SHA-256) restaurée sur une instance neuve et comparée table par table ; mauvaise phrase, fichier altéré et instance au travail refusés."
 limits = "Données de test. La phrase secrète n'est enregistrée nulle part : perdue, la sauvegarde est irrécupérable. Les fichiers vidéo du studio n'y figurent pas. Sur un hébergement sans disque persistant, la sauvegarde ne protège que si le propriétaire la télécharge."
-tags = ["ci", "scenario-5"]
+tags = ["ci"]
 
 [claim.falsification]
 description = "Mutation : dans une copie, la restauration accepte d'écraser une instance qui porte du travail. Le test de sauvegarde d'instance, vert sur la copie intacte (témoin), doit alors échouer."
