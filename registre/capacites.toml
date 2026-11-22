@@ -13,6 +13,12 @@ repo = "haynbroit-alt/SOVEREIGN"
 commit = "7cddfbd53ae69601b47219f51ea9c0e850fee392"
 path = "../SOVEREIGN"
 
+# OMNIA : l'application de travail (gestion, finances, interactions). Changer l'épingle invalide ses preuves.
+[subjects.gestion]
+repo = "haynbroit-alt/Logiciel-"
+commit = "a6fd9a74371d7b9a7c7e0c5838acd683368931f8"
+path = "../Logiciel-"
+
 # ---------------------------------------------------------------------------------------------- CORE
 
 [[claim]]
@@ -189,6 +195,63 @@ id = "centre-de-connexions"
 domain = "BUSINESS"
 capability = "Centre de connexions : relier, autoriser, surveiller et déconnecter les services externes depuis VELYX"
 limits = "Non démontré par une commande. Ce qui existe au 21/11/2026 : un registre (registre/connexions.toml) et sa page, dont chaque état vient d'un essai en lecture fait par l'agent avec les connecteurs du compte du propriétaire, que omega ne peut pas rejouer. Ce qui n'existe pas : un serveur VELYX qui détient ses propres autorisations OAuth, reçoit des webhooks, synchronise seul et révoque une liaison. Connecter et déconnecter se font dans les réglages du compte, pas dans VELYX."
+
+[[claim]]
+id = "gestion-suite-verifiee"
+domain = "ENGINEERING"
+capability = "L'application de travail (OMNIA) passe sa suite de tests"
+subject = "gestion"
+command = 'npm test'
+output_regex = '^# fail 0$'
+scope = "OMNIA au commit épinglé, Node 22.13 ou plus, aucune dépendance. Un test (studio de cinéma) est sauté quand ffmpeg est absent."
+limits = "Une suite verte prouve ce que la suite teste. Les fournisseurs d'IA et les envois vers les messageries n'y sont éprouvés que contre des réponses simulées. Aucune donnée réelle : le service en ligne n'est pas l'objet de cette preuve."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Mutation : dans une copie, n'importe quel espace peut importer le compte Stripe. Le test qui réserve l'import à l'espace central, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_gestion.sh" stripe'
+exit_code = 1
+output_regex = '^not ok \d+ - Stripe : avec un espace central'
+
+[[claim]]
+id = "gestion-cloisonnement-des-projets"
+domain = "SOVEREIGN"
+capability = "Chaque projet garde ses données : comptes, rôles, coordination et mémoire partagée respectent les droits"
+subject = "gestion"
+command = '''node --disable-warning=ExperimentalWarning --test --test-name-pattern="comptes et rôles|coordination|mémoire partagée" test/omnia.test.js'''
+output_regex = '^# pass 3$'
+scope = "Trois tests d'OMNIA au commit épinglé, par HTTP sur un serveur réel lancé par le test : un compte ne voit que les espaces auxquels il a droit, dans les lignes comme dans les totaux ; un document reste privé tant qu'il n'est pas partagé ; un lecteur ne partage pas."
+limits = "Données de test. Les droits n'agissent qu'avec des comptes : avec le seul jeton d'accès, qui le détient peut tout. Pas de double authentification."
+tags = ["ci", "scenario-6"]
+
+[claim.falsification]
+description = "Mutation : dans une copie, la vue de coordination ne filtre plus selon les droits du compte. Le test de coordination, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_gestion.sh" droits'
+exit_code = 1
+output_regex = '^not ok \d+ - coordination'
+
+[claim.impact]
+beneficiaries = "Le propriétaire, et toute personne à qui il ouvrira un projet."
+indicator = "Données d'un projet lues par un compte qui n'y a pas droit : 0."
+method = "Lecture de la coordination et de la mémoire partagée par un compte limité à un seul espace."
+counterfactual = "Sans ce filtre, ouvrir un projet à quelqu'un lui montrerait les encaissements et les documents de tous les autres."
+
+[[claim]]
+id = "gestion-sauvegarde-restaurable"
+domain = "MEMORY"
+capability = "Sauvegarde chiffrée de toute l'instance, restaurée à l'identique, sans jamais écraser un travail"
+subject = "gestion"
+command = '''node --disable-warning=ExperimentalWarning --test --test-name-pattern="sauvegarde" test/omnia.test.js'''
+output_regex = '^# pass 2$'
+scope = "Deux tests d'OMNIA au commit épinglé : sauvegarde d'un espace, et sauvegarde de l'instance (AES-256-GCM, clé dérivée par scrypt, empreinte SHA-256) restaurée sur une instance neuve et comparée table par table ; mauvaise phrase, fichier altéré et instance au travail refusés."
+limits = "Données de test. La phrase secrète n'est enregistrée nulle part : perdue, la sauvegarde est irrécupérable. Les fichiers vidéo du studio n'y figurent pas. Sur un hébergement sans disque persistant, la sauvegarde ne protège que si le propriétaire la télécharge."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Mutation : dans une copie, la restauration accepte d'écraser une instance qui porte du travail. Le test de sauvegarde d'instance, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_gestion.sh" ecrasement'
+exit_code = 1
+output_regex = "^not ok \\d+ - sauvegarde d'instance"
 
 # -------------------------------------------------------------------------------------------- AGENTS
 
