@@ -3,7 +3,7 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 17 fonction(s) sur 28 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 16 fonction(s) sur 28 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
@@ -22,7 +22,7 @@ Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a7437
 | ENGINEERING | 1 | · | · | 1 | · | · |
 | BUSINESS | 7 | · | · | 1 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
-| MEMORY | · | 2 | 1 | 1 | · | · |
+| MEMORY | · | 1 | 1 | 2 | · | · |
 | OMEGA | 1 | · | · | 1 | · | · |
 | SOVEREIGN | · | · | · | 3 | · | · |
 
@@ -96,7 +96,7 @@ Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a7437
 
 | Fonction | Statut | Niveau | Dernière preuve | Limites |
 |---|---|---|---|---|
-| Sauvegarde chiffrée de toute l'instance, restaurée à l'identique, sans jamais écraser un travail (`gestion-sauvegarde-restaurable`) | INCONNU | DISPONIBLE | preuve périmée : la revendication a changé depuis | Données de test. La phrase secrète n'est enregistrée nulle part : perdue, la sauvegarde est irrécupérable. Les fichiers vidéo du studio n'y figurent pas. Sur un hébergement sans disque persistant, la sauvegarde ne protège que si le propriétaire la télécharge. |
+| Sauvegarde chiffrée de toute l'instance, restaurée à l'identique, sans jamais écraser un travail (`gestion-sauvegarde-restaurable`) | PROUVÉ | TESTÉ | 2026-11-22 · local · gestion@a6fd9a74 · 2 exécution(s) · attaque résistée · n°35 | Données de test. La phrase secrète n'est enregistrée nulle part : perdue, la sauvegarde est irrécupérable. Les fichiers vidéo du studio n'y figurent pas. Sur un hébergement sans disque persistant, la sauvegarde ne protège que si le propriétaire la télécharge. |
 | Le registre financier, les dépenses approuvées et le journal d'audit ne peuvent pas être réécrits (`registre-ajout-seul`) | PROUVÉ | TESTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque résistée · n°20 | Hors périmètre : un accès au fichier de base permet de supprimer les déclencheurs. Les données de la sonde sont fictives. |
 | Une tâche interrompue est reprise sans refaire les étapes déjà validées (`reprise-tache-interrompue`) | ÉTAYÉ | CONNECTÉ | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque non tentée · n°21 | Tests unitaires seulement : aucune interruption réelle (processus tué) n'a été provoquée. ÉTAYÉ au mieux. |
 | L'état du moteur est sauvegardé à chaque cycle quotidien (`etat-persistant-a-jour`) | ÉCHEC | DISPONIBLE | 2026-11-21 · agent · moteur@7cddfbd5 · 2 exécution(s) · attaque non tentée · n°22 | Depuis le 18/11/2026 le cycle quotidien se termine « réussi » en dix secondes sans rien exécuter : son garde-fou de confidentialité le bloque parce que le dépôt est public. Décision du propriétaire : rendre le dépôt privé, ou autoriser l'état public. |
