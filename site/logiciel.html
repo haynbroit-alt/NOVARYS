@@ -42,7 +42,7 @@ text-decoration:none;font-weight:600}
 <nav aria-label="Navigation"><strong>VELYX</strong><a href="index.html">Accueil</a><a href="projets.html" aria-current="page">Projets</a><a href="connexions.html">Connexions</a><a href="activite.html">Activité</a><a href="intelligence.html">Intelligence</a><a href="parametres.html">Paramètres</a></nav>
 <main>
 <h1>OMNIA, un logiciel qui transforme les besoins d&#x27;une activité en constats, décisions et actions</h1>
-<p class="soft">Logiciel- · observé le 2026-11-21</p>
+<p class="soft">Logiciel- · observé le 2026-11-22</p>
 <h2>Rôle dans le noyau</h2>
 <p>Gestion : orchestre, automatise, optimise. Vision du propriétaire du 21/11/2026 ; ses connecteurs ne sont testés que contre des réponses simulées.</p>
 <h2>Localisation</h2>
@@ -50,9 +50,9 @@ text-decoration:none;font-weight:600}
 <h2>Accès</h2>
 <p>Lecture seule depuis cette session.</p>
 <h2>État réel</h2>
-<p>Version 0.7, socle fonctionnel selon le dépôt : espaces cloisonnés, comptes avec rôles, tâches, finances avec import CSV, recommandations, exécution avec autorisations, journal d&#x27;audit, sauvegarde et restauration. 4 428 lignes de JavaScript et 32 cas de test, comptés à la main dans le cycle C-0006 (pas par l&#x27;observateur du moteur). 0 utilisateur connu, 0 vente.</p>
+<p>Application de travail : comptes avec rôles, espaces cloisonnés, tâches, finances, documents, actions soumises à autorisation, journal d&#x27;audit. 36 tests, rejoués le 22/11/2026. Déployable sur un hébergeur depuis le 22/11/2026 ; les 17 espaces de projets se créent seuls sur une base vide. Mise en ligne en cours par le propriétaire, non constatée. 0 utilisateur connu, 0 vente.</p>
 <h2>Fonctions démontrées</h2>
-<p>Le dépôt déclare un parcours complet vérifié dans un navigateur et par ses tests. Non rejoué dans ce cycle.</p>
+<p>Démarrage comme en production puis ouverture dans un navigateur : après saisie du jeton, les 17 espaces sont utilisables. Import Stripe essayé contre le vrai service, en lecture seule : réponse reçue, aucun mouvement sur 30 jours.</p>
 <h2>Dépendances</h2>
 <p>Node.js 22.13 ou plus, aucune dépendance, base SQLite locale.</p>
 <h2>Coûts</h2>
@@ -60,11 +60,11 @@ text-decoration:none;font-weight:600}
 <h2>Réutilisation</h2>
 <p>C&#x27;est l&#x27;actif le plus proche du noyau à connexions demandé pour velyx.org : modules, clé d&#x27;API, autorisations, journal d&#x27;audit, import Stripe et envois vers trois messageries déjà écrits. À réutiliser avant d&#x27;écrire un autre noyau.</p>
 <h2>Preuves</h2>
-<p>32 tests déclarés par le README, non rejoués. Selon le dépôt, l&#x27;import Stripe, les fournisseurs d&#x27;IA et les envois vers les messageries ne sont testés que contre des réponses simulées ; l&#x27;intégration continue n&#x27;a encore jamais tourné.</p>
+<p>36 tests, code 0, le 22/11/2026. Intégration continue en service : contrôle « test » en succès sur les trois dernières fusions. Le dédoublonnage de l&#x27;import Stripe n&#x27;a pas pu être éprouvé, faute de mouvements réels. Fournisseurs d&#x27;IA et envois vers les messageries : testés contre des réponses simulées seulement.</p>
 <h2>Blocages</h2>
-<p>Selon le dépôt : aucun connecteur OAuth, pas de double authentification ni de HTTPS intégré, base non chiffrée, modules externes sans bac à sable. Pas d&#x27;offre, pas de prix en vigueur, recoupe en partie le moteur SOVEREIGN (ADR 0001 : un seul moteur).</p>
+<p>Hébergement gratuit : la base ne survit pas à un redémarrage, donc pas d&#x27;exploitation réelle. Aucun connecteur OAuth (messagerie, réseaux sociaux, boutiques) : chacun demande des identifiants créés par le propriétaire chez la plateforme. Pas de double authentification, base non chiffrée, modules externes sans bac à sable.</p>
 <h2>Prochaine action rentable</h2>
-<p>Aucune action rentable directe. Décision du propriétaire : en faire le tableau de bord du portail velyx.org, ou le geler au profit du moteur.</p>
+<p>Propriétaire : définir le jeton d&#x27;accès chez l&#x27;hébergeur, puis une clé Stripe restreinte en lecture. Agent : vérifier le service en ligne, puis construire la messagerie dès que les identifiants existent.</p>
 </main>
 </body>
 </html>
