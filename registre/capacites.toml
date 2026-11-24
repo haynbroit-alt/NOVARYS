@@ -23,7 +23,7 @@ path = "../Logiciel-"
 # elle-même : ses capacités sont prouvées ici. Changer l'épingle invalide ses preuves.
 [subjects.mere]
 repo = "haynbroit-alt/.1"
-commit = "ab85d6cfe39991948af3ae0ca6cc307470096137"
+commit = "1adf7b2d4b7d5dbfe49bdfcbb903926c79de42ec"
 path = "../.1"
 
 # ---------------------------------------------------------------------------------------------- CORE
