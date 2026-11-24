@@ -70,5 +70,10 @@ jobs:
           commit=$(python3 -c "import tomllib; print(tomllib.load(open('registre/capacites.toml', 'rb'))['subjects']['gestion']['commit'])")
           git clone -q https://github.com/haynbroit-alt/Logiciel- "$RUNNER_TEMP/gestion"
           git -C "$RUNNER_TEMP/gestion" checkout -q "$commit"
+      - name: Entreprise mère au commit épinglé par le référentiel
+        run: |
+          commit=$(python3 -c "import tomllib; print(tomllib.load(open('registre/capacites.toml', 'rb'))['subjects']['mere']['commit'])")
+          git clone -q https://github.com/haynbroit-alt/.1 "$RUNNER_TEMP/mere"
+          git -C "$RUNNER_TEMP/mere" checkout -q "$commit"
       - name: Preuves rejouées dans un second environnement (sans écrire au registre)
-        run: uv run omega verify --tag ci --actor ci --subject "moteur=$RUNNER_TEMP/moteur" --subject "gestion=$RUNNER_TEMP/gestion"
+        run: uv run omega verify --tag ci --actor ci --subject "moteur=$RUNNER_TEMP/moteur" --subject "gestion=$RUNNER_TEMP/gestion" --subject "mere=$RUNNER_TEMP/mere"

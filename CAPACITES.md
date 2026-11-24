@@ -3,13 +3,14 @@
 > Fichier généré par `omega render` à partir de `registre/capacites.toml` (ce qui est revendiqué) et de
 > `registre/preuves.jsonl` (ce qui a été exécuté). Ne pas le modifier à la main.
 
-**Verdict : NOVARYS n'est pas opérationnel.** 16 fonction(s) sur 28 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
+**Verdict : NOVARYS n'est pas opérationnel.** 16 fonction(s) sur 31 sont sous le niveau TESTÉ ; 9 domaine(s) sur 10 n'ont aucune fonction démontrée sur données réelles (CORE, INTELLIGENCE, INTERNET, ENGINEERING, BUSINESS, AGENTS, MEMORY, OMEGA, SOVEREIGN).
 
 Règle du verdict : aucune fonction sous TESTÉ, et dans chaque domaine au moins une fonction
 OPÉRATIONNELLE. Rentable est une autre question : elle se lit dans les encaissements, pas ici.
 
 Dépôt évalué « moteur » : `haynbroit-alt/SOVEREIGN` au commit `7cddfbd53ae6`.
 Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a74371d`.
+Dépôt évalué « mere » : `haynbroit-alt/.1` au commit `ab85d6cfe399`.
 
 ## Vue d'ensemble
 
@@ -20,7 +21,7 @@ Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a7437
 | DISCOVERY | 1 | · | · | · | 1 | · |
 | INTERNET | 1 | · | · | · | · | · |
 | ENGINEERING | 1 | · | · | 1 | · | · |
-| BUSINESS | 7 | · | · | 1 | · | · |
+| BUSINESS | 7 | · | · | 4 | · | · |
 | AGENTS | 1 | · | 1 | · | · | · |
 | MEMORY | · | 1 | 1 | 2 | · | · |
 | OMEGA | 1 | · | · | 1 | · | · |
@@ -35,7 +36,7 @@ Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a7437
 | 3 | Invention comparée et falsifiable | `comparaison-sept-criteres` | ABSENT |
 | 4 | Création d'une offre réellement commercialisable | `premier-encaissement-reel` | ABSENT |
 | 5 | Reprise fiable d'une mission interrompue | `reprise-tache-interrompue` | CONNECTÉ |
-| 6 | Blocage d'une action non autorisée et protection des secrets | `gestion-cloisonnement-des-projets`, `registre-ajout-seul`, `depense-sans-encaissement-refusee`, `aucune-approbation-par-agent` | TESTÉ |
+| 6 | Blocage d'une action non autorisée et protection des secrets | `gestion-cloisonnement-des-projets`, `registre-ajout-seul`, `depense-sans-encaissement-refusee`, `aucune-approbation-par-agent`, `mere-garde-anti-fuite` | TESTÉ |
 | 7 | Reproduction indépendante d'une capacité | `reproduction-par-un-tiers` | ABSENT |
 
 ## CORE
@@ -84,6 +85,9 @@ Dépôt évalué « gestion » : `haynbroit-alt/Logiciel-` au commit `a6fd9a7437
 | REACHER : trouver des prospects, répondre aux demandes et suivre les commandes (`reacher-prospects-commandes`) | — | ABSENT | non construite | Non démontré. Aucune boutique ni messagerie n'est lisible ; les seuls prospects connus sont ceux du dépôt Velyx, à régénérer. |
 | Portail velyx.org en ligne : une page par projet, servie depuis le registre des actifs (`portail-velyx-en-ligne`) | — | ABSENT | non construite | Non démontré par une commande. Constaté le 21/11/2026 : les 23 pages de site/ sont servies, identiques au dépôt, à une adresse de l'hébergeur (Cloudflare Workers), publiées à chaque fusion sur la branche principale. Le domaine velyx.org n'y est pas rattaché : il pointe encore ailleurs et répond « site introuvable » (DECISIONS.md, D9). Le portail montre les registres ; il n'exécute aucune action. |
 | Centre de connexions : relier, autoriser, surveiller et déconnecter les services externes depuis VELYX (`centre-de-connexions`) | — | ABSENT | non construite | Non démontré par une commande. Ce qui existe au 21/11/2026 : un registre (registre/connexions.toml) et sa page, dont chaque état vient d'un essai en lecture fait par l'agent avec les connecteurs du compte du propriétaire, que omega ne peut pas rejouer. Ce qui n'existe pas : un serveur VELYX qui détient ses propres autorisations OAuth, reçoit des webhooks, synchronise seul et révoque une liaison. Connecter et déconnecter se font dans les réglages du compte, pas dans VELYX. |
+| L'entreprise mère passe ses tests adversariaux, et son portefeuille et ses sorties publiques sont valides (`mere-suite-verifiee`) | PROUVÉ | TESTÉ | 2026-11-24 · agent · mere@ab85d6cf · 2 exécution(s) · attaque résistée · n°36 | Une suite verte prouve ce que la suite teste. Les contrôles réseau (pages publiques, sites des prospects, prestataire de paiement) ne sont pas rejoués ici : ils exigent le réseau ou une clé. |
+| La garde de l'entreprise mère refuse les données personnelles et financières dans les sorties publiques (`mere-garde-anti-fuite`) | PROUVÉ | TESTÉ | 2026-11-24 · agent · mere@ab85d6cf · 2 exécution(s) · attaque résistée · n°37 | Une garde par motifs ne voit pas un nom propre isolé : les adaptateurs ne recopient donc jamais le contenu d'une cellule dans un message. |
+| L'étape « encaissé » de la mère n'est franchie que si la banque confirme le crédit, net des frais (`mere-encaisse-exige-la-banque`) | PROUVÉ | TESTÉ | 2026-11-24 · agent · mere@ab85d6cf · 2 exécution(s) · attaque résistée · n°38 | Le relevé bancaire est fourni par le propriétaire (prive/banque.csv) : la preuve vaut ce que vaut ce relevé. |
 
 ## AGENTS
 
