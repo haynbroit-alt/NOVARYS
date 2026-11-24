@@ -19,6 +19,13 @@ repo = "haynbroit-alt/Logiciel-"
 commit = "a6fd9a74371d7b9a7c7e0c5838acd683368931f8"
 path = "../Logiciel-"
 
+# L'entreprise mère (dépôt .1) : la chaîne mesurée de l'opportunité à l'encaissement. Elle ne se valide pas
+# elle-même : ses capacités sont prouvées ici. Changer l'épingle invalide ses preuves.
+[subjects.mere]
+repo = "haynbroit-alt/.1"
+commit = "1adf7b2d4b7d5dbfe49bdfcbb903926c79de42ec"
+path = "../.1"
+
 # ---------------------------------------------------------------------------------------------- CORE
 
 [[claim]]
@@ -385,3 +392,56 @@ tags = ["ci", "scenario-6"]
 description = "Un agent tente de se déclarer 100 000 € d'encaissement par quatre voies (import CSV sous deux noms, compétence finance en direct, facture émise puis déclarée encaissée), puis demande une dépense."
 command = 'SOVEREIGN_HOME="$OMEGA_TMP/espace" uv run python "$OMEGA_ROOT/registre/sondes/outils_mcp.py" attaquer'
 output_regex = '^4 tentatives d.encaissement par un agent ; enveloppe de dépense : 0\.00 €$'
+
+# ------------------------------------------------------------------------------------- ENTREPRISE MÈRE
+
+[[claim]]
+id = "mere-suite-verifiee"
+domain = "BUSINESS"
+capability = "L'entreprise mère passe ses tests adversariaux, et son portefeuille et ses sorties publiques sont valides"
+subject = "mere"
+command = '''python3 -m unittest discover -s tests && python3 -m mere verifier'''
+output_regex = '^OK : \d+ opportunité'
+scope = "Mère au commit épinglé, bibliothèque standard seule, données de test pour l'argent (faux prestataire), portefeuille et sorties publiques réels du dépôt."
+limits = "Une suite verte prouve ce que la suite teste. Les contrôles réseau (pages publiques, sites des prospects, prestataire de paiement) ne sont pas rejoués ici : ils exigent le réseau ou une clé."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Mutation : dans une copie de la mère, un paiement en mode test est compté comme encaissé. Le test qui l'interdit, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_mere.sh" livemode'
+exit_code = 1
+output_regex = '^FAIL: test_paiement_en_mode_test_ignore'
+
+[[claim]]
+id = "mere-garde-anti-fuite"
+domain = "BUSINESS"
+capability = "La garde de l'entreprise mère refuse les données personnelles et financières dans les sorties publiques"
+subject = "mere"
+command = '''python3 -m unittest discover -s tests -k Garde -k test_f05 -k test_f04 -k test_rien_de_public'''
+output_regex = '^OK$'
+scope = "Motifs de la garde (e-mail, téléphone, SIREN et SIRET, TVA, identifiants et clés de paiement, identifiants de message, montants) et ordre d'écriture : rien de public avant la garde."
+limits = "Une garde par motifs ne voit pas un nom propre isolé : les adaptateurs ne recopient donc jamais le contenu d'une cellule dans un message."
+tags = ["ci", "scenario-6"]
+
+[claim.falsification]
+description = "Mutation : dans une copie, la garde ne reconnaît plus les adresses e-mail. Le test des fuites, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_mere.sh" garde'
+exit_code = 1
+output_regex = '^FAIL: test_fuites_detectees'
+
+[[claim]]
+id = "mere-encaisse-exige-la-banque"
+domain = "BUSINESS"
+capability = "L'étape « encaissé » de la mère n'est franchie que si la banque confirme le crédit, net des frais"
+subject = "mere"
+command = '''python3 -m unittest discover -s tests -k test_argent_encaisse -k test_banque -k test_paiement_sans_releve -k test_virement_absent'''
+output_regex = '^OK$'
+scope = "Règle de l'étape « encaissé » : paiement réussi et rapproché du grand livre, virement retrouvé au crédit du relevé bancaire du propriétaire."
+limits = "Le relevé bancaire est fourni par le propriétaire (prive/banque.csv) : la preuve vaut ce que vaut ce relevé."
+tags = ["ci"]
+
+[claim.falsification]
+description = "Mutation : dans une copie, l'étape « encaissé » est franchie sans confirmation bancaire. Le test qui l'exige, vert sur la copie intacte (témoin), doit alors échouer."
+command = 'bash "$OMEGA_ROOT/registre/sondes/mutation_mere.sh" banque'
+exit_code = 1
+output_regex = '^FAIL: test_argent_encaisse_franchit_l_etape_seulement_avec_la_banque'
